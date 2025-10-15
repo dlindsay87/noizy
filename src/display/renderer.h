@@ -11,7 +11,7 @@
 
 #include "hash_util.hpp"
 
-enum FontSize { SMALL = 12, MID = 36, LARGE = 72, EXTRA = 144 };
+typedef enum class FontSize { SMALL = 10, MID = 20, LARGE = 40, EXTRA = 80 } FS;
 
 struct HashableColor : SDL_Color {
 	bool operator==(const HashableColor &other) const noexcept
@@ -22,7 +22,7 @@ struct HashableColor : SDL_Color {
 };
 
 struct Font {
-	FontSize size;
+	int size;
 	HashableColor color;
 
 	bool operator==(const Font &other) const noexcept
@@ -32,10 +32,10 @@ struct Font {
 };
 
 struct TextOverlay {
-	glm::ivec2 pos;
-
 	std::string text;
 	Font font;
+
+	glm::ivec2 pos;
 
 	bool operator==(const TextOverlay &other) const noexcept
 	{
@@ -56,7 +56,7 @@ template <> struct hash<HashableColor> {
 template <> struct hash<Font> {
 	std::size_t operator()(const Font &f) const noexcept
 	{
-		return HashUtil::hash_values(static_cast<int>(f.size), f.color);
+		return HashUtil::hash_values(f.size, f.color);
 	}
 };
 
@@ -85,7 +85,7 @@ class Renderer
 	Renderer() {}
 	~Renderer();
 
-	void init(SDL_Window *window, std::string font = "FeeeMono");
+	void init(SDL_Window *window, std::string font = "FreeMono");
 
 	void clear()
 	{
@@ -109,7 +109,10 @@ class Renderer
 	{
 		ov.font.color = c;
 	}
-	void resizeText(TextOverlay &ov, FontSize size) { ov.font.size = size; }
+	void resizeText(TextOverlay &ov, FontSize size)
+	{
+		ov.font.size = (int)size;
+	}
 
 	SDL_Renderer *getRenderer() const { return _renderer; }
 };

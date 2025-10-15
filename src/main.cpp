@@ -8,6 +8,8 @@
 #include "keyboard.h"
 #include "oscilloscope.h"
 
+#include "base_knob.h"
+
 class Game
 {
       private:
@@ -19,6 +21,10 @@ class Game
 	AudioManager audioManager;
 	Keyboard keyboard;
 	Oscilloscope osc;
+
+	IKnob<float> knob;
+	IKnob<int> knob1;
+	IKnob<int> knob2;
 
 	SDL_Event e;
 	bool game_on;
@@ -34,6 +40,13 @@ class Game
 		audioManager.init();
 		audioManager.addGenerator(&keyboard);
 		osc.init({512, 160}, {480, 240}, audioManager.getBufferLen());
+
+		knob.init("Test", 2.3f, {256, 160}, KR::MID, {-60.0f, 180.0f},
+			  {0.0f, 26.1f}, 0.4f);
+		knob1.init("Test1", 0, {192, 380}, KR::SMALL, {-60.0f, 180.0f},
+			   {0, 5}, 1);
+		knob2.init("Test2", 4, {320, 380}, KR::SMALL, {-60.0f, 180.0f},
+			   {0, 5}, 1);
 	}
 
 	~Game()
@@ -54,6 +67,10 @@ class Game
 		window.processInput(&input);
 		keyboard.processInput(&input);
 
+		knob.processInput(&input);
+		knob1.processInput(&input);
+		knob2.processInput(&input);
+
 		if (input.isKeyPressed(SDL_SCANCODE_Z) ||
 		    input.isKeyPressed(SDL_SCANCODE_ESCAPE) || input.willExit())
 			game_on = false;
@@ -62,6 +79,11 @@ class Game
 	void update()
 	{
 		window.update(0);
+
+		knob.update();
+		knob1.update();
+		knob2.update();
+
 		timer.update();
 	}
 
@@ -69,6 +91,11 @@ class Game
 	{
 		renderer.clear();
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
+
+		knob.draw(&renderer, intp);
+		knob1.draw(&renderer, intp);
+		knob2.draw(&renderer, intp);
+
 		renderer.present();
 	}
 
