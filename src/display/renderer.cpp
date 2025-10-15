@@ -34,6 +34,33 @@ void Renderer::init(SDL_Window *window, std::string font)
 	_fontName = font;
 }
 
+_TTF_Font *Renderer::createFont(Font font)
+{
+	_TTF_Font *tFont;
+	std::string path = "fonts/" + _fontName + ".ttf";
+	tFont = TTF_OpenFont(path.c_str(), font.size);
+	if (!tFont) {
+		std::cerr << "Failed to load font: " << SDL_GetError()
+			  << std::endl;
+		TTF_CloseFont(tFont);
+		exit(1);
+	}
+	return tFont;
+}
+
+_TTF_Font *Renderer::fetchCachedFont(Font font)
+{
+	_TTF_Font *tFont;
+	auto it = _fontCache.find(font);
+	if (it != _fontCache.end()) {
+		tFont = it->second;
+	} else {
+		tFont = createFont(font);
+		_fontCache[font] = tFont; // Cache the font
+	}
+	return tFont;
+}
+
 SDL_Texture *Renderer::createTexture(TextOverlay ov)
 {
 	_TTF_Font *tFont = fetchCachedFont(ov.font);
@@ -58,27 +85,7 @@ SDL_Texture *Renderer::createTexture(TextOverlay ov)
 	return texture;
 }
 
-_TTF_Font *Renderer::fetchCachedFont(Font font)
-{
-	_TTF_Font *tFont;
-	auto it = _fontCache.find(font);
-	if (it != _fontCache.end()) {
-		tFont = it->second;
-	} else {
-		std::string path = "fonts/" + _fontName + ".ttf";
-		tFont = TTF_OpenFont(path.c_str(), font.size);
-		if (!tFont) {
-			std::cerr << "Failed to load font: " << SDL_GetError()
-				  << std::endl;
-			TTF_CloseFont(tFont);
-			exit(1);
-		}
-		_fontCache[font] = tFont; // Cache the font
-	}
-	return tFont;
-}
-
-SDL_Texture *Renderer::fetchCachedText(TextOverlay ov)
+SDL_Texture *Renderer::fetchCachedTexture(TextOverlay ov)
 {
 	SDL_Texture *texture;
 	auto it = _textCache.find(ov);
@@ -93,7 +100,7 @@ SDL_Texture *Renderer::fetchCachedText(TextOverlay ov)
 
 void Renderer::drawCachedText(TextOverlay &ov)
 {
-	SDL_Texture *texture = fetchCachedText(ov);
+	SDL_Texture *texture = fetchCachedTexture(ov);
 
 	SDL_Rect _tRect;
 	SDL_QueryTexture(texture, NULL, NULL, &_tRect.w, &_tRect.h);

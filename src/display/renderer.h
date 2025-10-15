@@ -95,10 +95,11 @@ class Renderer
 
 	void present() { SDL_RenderPresent(_renderer); }
 
-	SDL_Texture *createTexture(TextOverlay ov);
-
+	_TTF_Font *createFont(Font font);
 	_TTF_Font *fetchCachedFont(Font font);
-	SDL_Texture *fetchCachedText(TextOverlay ov);
+
+	SDL_Texture *createTexture(TextOverlay ov);
+	SDL_Texture *fetchCachedTexture(TextOverlay ov);
 
 	void drawCachedText(TextOverlay &ov);
 	void drawDynamicText(TextOverlay &ov);

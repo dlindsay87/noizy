@@ -32,8 +32,8 @@ typedef enum class KnobRadius { SMALL = 20, MID = 40, LARGE = 80 } KR;
 }*/
 
 struct KnobForm {
-	TextOverlay label;
-	TextOverlay value;
+	TextOverlay labelOV;
+	TextOverlay valueOV;
 
 	glm::ivec2 pointArr[N_POINTS];
 	glm::ivec2 pos;
@@ -46,7 +46,7 @@ struct KnobForm {
 
 template <typename U> class IKnob
 {
-      protected:
+      private:
 	KnobForm _knob;
 	float _displayScale;
 
@@ -76,12 +76,12 @@ template <typename U> class IKnob
 		  glm::vec2 rotLimits, glm::vec<2, U, glm::lowp> valLimits,
 		  float step)
 	{
-		_knob.label.text = label;
-		_knob.label.font.color = KnobColors[(int)CS::NEUTRAL];
+		_knob.labelOV.text = label;
+		_knob.labelOV.font.color = KnobColors[(int)CS::NEUTRAL];
 
 		_value = value;
-		_knob.value.text = _valToString();
-		_knob.value.font.color = KnobColors[(int)CS::NEUTRAL];
+		_knob.valueOV.text = _valToString();
+		_knob.valueOV.font.color = KnobColors[(int)CS::NEUTRAL];
 
 		_knob.pos = pos;
 		_knob.radius = (int)radius;
@@ -89,26 +89,26 @@ template <typename U> class IKnob
 		switch (radius) {
 		case KR::SMALL:
 		default:
-			_knob.label.font.size = (int)FS::MID;
-			_knob.value.font.size = (int)FS::SMALL;
+			_knob.labelOV.font.size = (int)FS::MID;
+			_knob.valueOV.font.size = (int)FS::SMALL;
 			break;
 		case KR::MID:
-			_knob.label.font.size = (int)FS::LARGE;
-			_knob.value.font.size = (int)FS::MID;
+			_knob.labelOV.font.size = (int)FS::LARGE;
+			_knob.valueOV.font.size = (int)FS::MID;
 			break;
 		case KR::LARGE:
-			_knob.label.font.size = (int)FS::EXTRA;
-			_knob.value.font.size = (int)FS::LARGE;
+			_knob.labelOV.font.size = (int)FS::EXTRA;
+			_knob.valueOV.font.size = (int)FS::LARGE;
 			break;
 		}
 
-		_knob.label.pos.x = pos.x;
-		_knob.label.pos.y =
-		    pos.y - (_knob.radius + _knob.label.font.size);
+		_knob.labelOV.pos.x = pos.x;
+		_knob.labelOV.pos.y =
+		    pos.y - (_knob.radius + _knob.labelOV.font.size);
 
-		_knob.value.pos.x = pos.x;
-		_knob.value.pos.y =
-		    pos.y + (_knob.radius + _knob.value.font.size);
+		_knob.valueOV.pos.x = pos.x;
+		_knob.valueOV.pos.y =
+		    pos.y + (_knob.radius + _knob.valueOV.font.size);
 
 		_knob.rotationLimits = rotLimits;
 		_valueLimits = valLimits;
@@ -157,31 +157,30 @@ template <typename U> class IKnob
 
 	virtual void update()
 	{
-		static U oldValue;
+		// static U oldValue;
 
-		if (oldValue != _value) {
-			float angle =
-			    ((_value - _valueLimits.x) * _displayScale +
-			     _knob.rotationLimits.x) *
-			    M_PI / 180;
+		// if (oldValue != _value) {
+		float angle = ((_value - _valueLimits.x) * _displayScale +
+			       _knob.rotationLimits.x) *
+			      M_PI / 180;
 
-			for (auto &p : _knob.pointArr) {
-				int px = (int)(_knob.radius * cos(angle));
-				int py = (int)(_knob.radius * sin(angle));
-				p = {_knob.pos.x - px, _knob.pos.y - py};
-				angle += 2 * M_PI / N_POINTS;
-			}
-
-			oldValue = _value;
-			_knob.value.text = _valToString();
+		for (auto &p : _knob.pointArr) {
+			int px = (int)(_knob.radius * cos(angle));
+			int py = (int)(_knob.radius * sin(angle));
+			p = {_knob.pos.x - px, _knob.pos.y - py};
+			angle += 2 * M_PI / N_POINTS;
 		}
+
+		// oldValue = _value;
+		_knob.valueOV.text = _valToString();
+		//}
 	}
 
 	virtual void draw(Renderer *ren, float intp)
 	{
 
-		ren->drawCachedText(_knob.label);
-		ren->drawDynamicText(_knob.value);
+		ren->drawCachedText(_knob.labelOV);
+		ren->drawDynamicText(_knob.valueOV);
 
 		SDL_SetRenderDrawColor(ren->getRenderer(), _knob.color.r,
 				       _knob.color.g, _knob.color.b,
@@ -199,7 +198,7 @@ template <typename U> class IKnob
 
 	virtual const char *getLabel() const
 	{
-		return _knob.label.text.c_str();
+		return _knob.labelOV.text.c_str();
 	}
 
 	U getValue() const { return _value; }

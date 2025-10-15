@@ -10,6 +10,3 @@ Select knobs by clicking them and adjust their values with your scroll wheel.
 - OpenGL 4.6
 - GLEW 2.2.0
 - GLM 0.9.9.8
-
-# Known Errors
-Conflict witch cached/dynamic textures for rendering causes odd interfacing.
