@@ -41,11 +41,11 @@ class Game
 		audioManager.addGenerator(&keyboard);
 		osc.init({512, 160}, {480, 240}, audioManager.getBufferLen());
 
-		knob.init("Test", 2.3f, {256, 160}, KR::MID, {-60.0f, 180.0f},
+		knob.init("Test", 2.3f, {256, 160}, DS::MID, {-60.0f, 180.0f},
 			  {0.0f, 26.1f}, 0.4f);
-		knob1.init("Test1", 0, {192, 380}, KR::SMALL, {-60.0f, 180.0f},
+		knob1.init("Test1", 0, {192, 380}, DS::SMALL, {-60.0f, 180.0f},
 			   {0, 5}, 1);
-		knob2.init("Test2", 0, {320, 380}, KR::SMALL, {-60.0f, 180.0f},
+		knob2.init("Test2", 0, {320, 380}, DS::SMALL, {-60.0f, 180.0f},
 			   {0, 5}, 1);
 	}
 

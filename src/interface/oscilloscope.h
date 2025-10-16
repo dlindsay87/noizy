@@ -12,9 +12,9 @@ class Oscilloscope
 
 	SDL_Rect _boundBox;
 
-	glm::u8vec4 _wavCol = {0, 255, 0, 255};
-	glm::u8vec4 _bgCol = {31, 63, 55, 255};
-	glm::u8vec4 _borCol = {255, 255, 255, 255};
+	HashableColor _wavCol = ColorSelection[DC::WAVE_G];
+	HashableColor _bgCol = ColorSelection[DC::MUTED_G];
+	HashableColor _borCol = ColorSelection[DC::NEUTRAL_W];
 
 	int16_t *oldDisplay;
 

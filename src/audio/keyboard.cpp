@@ -9,7 +9,7 @@ Keyboard::Keyboard(int octave) : _octave(octave)
 		_keyStates[i].phase = 0.0f;
 		_keyStates[i].state = EnvelopeState::Idle;
 	}
-	_wave = WaveArray[NOISE];
+	_wave = WaveArray[SINE];
 }
 
 void Keyboard::_intonate(int i)

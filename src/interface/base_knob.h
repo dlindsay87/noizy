@@ -11,26 +11,6 @@
 #define N_POINTS 16
 #endif
 
-typedef enum class ColorSelection { NEUTRAL, HOVERING, SELECTED } CS;
-HashableColor KnobColors[3] = {
-    {255, 255, 255, 255}, {127, 191, 0, 255}, {0, 255, 0, 255}};
-
-typedef enum class KnobRadius { SMALL = 20, MID = 40, LARGE = 80 } KR;
-
-/*inline HashableColor ColorSelect(ColorSelection c)
-{
-	switch (c) {
-	case SELECTED:
-		return {0, 255, 0, 255};
-	case HOVERING:
-		return {127, 191, 0, 255};
-	case NEUTRAL:
-	default:
-		return {255, 255, 255, 255};
-	}
-	// return KnobColors[c];
-}*/
-
 struct KnobForm {
 	TextOverlay labelOV;
 	TextOverlay valueOV;
@@ -40,7 +20,6 @@ struct KnobForm {
 	glm::vec2 rotationLimits;
 	int radius;
 
-	// glm::u8vec4 (*colorSelect)(ColorSelection);
 	HashableColor color;
 };
 
@@ -72,33 +51,33 @@ template <typename U> class IKnob
       public:
 	IKnob() {}
 
-	void init(const char *label, U value, glm::ivec2 pos, KnobRadius radius,
-		  glm::vec2 rotLimits, glm::vec<2, U, glm::lowp> valLimits,
-		  float step)
+	void init(const char *label, U value, glm::ivec2 pos,
+		  DisplaySize radius, glm::vec2 rotLimits,
+		  glm::vec<2, U, glm::lowp> valLimits, float step)
 	{
 		_knob.labelOV.text = label;
-		_knob.labelOV.font.color = KnobColors[(int)CS::NEUTRAL];
+		_knob.labelOV.font.color = ColorSelection[DC::NEUTRAL_W];
 
 		_value = value;
 		_knob.valueOV.text = _valToString();
-		_knob.valueOV.font.color = KnobColors[(int)CS::NEUTRAL];
+		_knob.valueOV.font.color = ColorSelection[DC::NEUTRAL_W];
 
 		_knob.pos = pos;
-		_knob.radius = (int)radius;
+		_knob.radius = radius;
 
 		switch (radius) {
-		case KR::SMALL:
+		case DS::MID:
 		default:
-			_knob.labelOV.font.size = (int)FS::MID;
-			_knob.valueOV.font.size = (int)FS::SMALL;
+			_knob.labelOV.font.size = DS::MID;
+			_knob.valueOV.font.size = DS::SMALL;
 			break;
-		case KR::MID:
-			_knob.labelOV.font.size = (int)FS::LARGE;
-			_knob.valueOV.font.size = (int)FS::MID;
+		case DS::SMALL:
+			_knob.labelOV.font.size = DS::SMALL;
+			_knob.valueOV.font.size = DS::TINY;
 			break;
-		case KR::LARGE:
-			_knob.labelOV.font.size = (int)FS::EXTRA;
-			_knob.valueOV.font.size = (int)FS::LARGE;
+		case DS::LARGE:
+			_knob.labelOV.font.size = DS::LARGE;
+			_knob.valueOV.font.size = DS::MID;
 			break;
 		}
 
@@ -127,19 +106,19 @@ template <typename U> class IKnob
 		glm::ivec2 mousePos = ip->getMousePosition();
 		if (!_selected) {
 			if (_isOverlapping(mousePos)) {
-				_knob.color = KnobColors[(int)CS::HOVERING];
+				_knob.color = ColorSelection[DC::HOVER_Y];
 				if (ip->isButtonPressed(SDL_BUTTON_LEFT)) {
 					_selected = true;
 					_knob.color =
-					    KnobColors[(int)CS::SELECTED];
+					    ColorSelection[DC::SELECT_B];
 				}
 			} else {
-				_knob.color = KnobColors[(int)CS::NEUTRAL];
+				_knob.color = ColorSelection[DC::NEUTRAL_W];
 			}
 		} else if (!_isOverlapping(mousePos) &&
 			   ip->isButtonPressed(SDL_BUTTON_LEFT)) {
 			_selected = false;
-			_knob.color = KnobColors[(int)CS::NEUTRAL];
+			_knob.color = ColorSelection[DC::NEUTRAL_W];
 		}
 
 		if (_selected) {
@@ -165,8 +144,8 @@ template <typename U> class IKnob
 			      M_PI / 180;
 
 		for (auto &p : _knob.pointArr) {
-			int px = (int)(_knob.radius * cos(angle));
-			int py = (int)(_knob.radius * sin(angle));
+			int px = static_cast<int>(_knob.radius * cos(angle));
+			int py = static_cast<int>(_knob.radius * sin(angle));
 			p = {_knob.pos.x - px, _knob.pos.y - py};
 			angle += 2 * M_PI / N_POINTS;
 		}

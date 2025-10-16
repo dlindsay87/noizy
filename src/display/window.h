@@ -30,6 +30,7 @@ class Window
 	const char *_name;
 	int _width, _height;
 	unsigned int _flags;
+	int _vSync;
 
 	SDL_Window *_window;
 	SDL_GLContext _context;

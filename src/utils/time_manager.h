@@ -22,7 +22,7 @@ class Timer
       private:
 	// ticks
 	double _interpolation, _accumulator;
-	int _loops;
+	int _loops, _frameCount, _currentFrame;
 
 	// frames
 	tp_sc _startTime, _frameStartTime;
@@ -41,14 +41,13 @@ class Timer
 	void update();
 
 	void interpolate();
+	void printOut();
 	void limit();
 
 	double getDelta(tp_sc t) const { return dd(sc::now() - t).count(); }
 	double getRunTime() const { return getDelta(_startTime); }
 	double getFPS() const { return _fps; }
 	double getInterpolation() const { return _interpolation; }
-
-	void printOut();
 };
 
 #endif

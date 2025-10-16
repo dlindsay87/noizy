@@ -11,8 +11,6 @@
 
 #include "hash_util.hpp"
 
-typedef enum class FontSize { SMALL = 10, MID = 20, LARGE = 40, EXTRA = 80 } FS;
-
 struct HashableColor : SDL_Color {
 	bool operator==(const HashableColor &other) const noexcept
 	{
@@ -20,6 +18,23 @@ struct HashableColor : SDL_Color {
 			a == other.a);
 	}
 };
+
+typedef enum DisplaySize { TINY = 10, SMALL = 20, MID = 40, LARGE = 80 } DS;
+typedef enum DisplayColor {
+	NEUTRAL_W = 0,
+	ERROR_R,
+	HOVER_Y,
+	WAVE_G,
+	MUTED_G,
+	SELECT_B,
+	BLACK,
+	NUM_COLORS
+} DC;
+
+inline HashableColor ColorSelection[DC::NUM_COLORS] = {
+    {255, 255, 255, 255}, {255, 0, 0, 255},  {255, 255, 0, 255},
+    {0, 255, 0, 255},	  {31, 63, 55, 255}, {0, 0, 255, 255},
+    {0, 0, 0, 255}};
 
 struct Font {
 	int size;
@@ -81,6 +96,8 @@ class Renderer
 	std::unordered_map<TextOverlay, SDL_Texture *, std::hash<TextOverlay>>
 	    _textCache{};
 
+	HashableColor _cc = ColorSelection[DC::BLACK];
+
       public:
 	Renderer() {}
 	~Renderer();
@@ -89,7 +106,7 @@ class Renderer
 
 	void clear()
 	{
-		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+		SDL_SetRenderDrawColor(_renderer, _cc.r, _cc.g, _cc.b, _cc.a);
 		SDL_RenderClear(_renderer);
 	}
 
@@ -110,9 +127,9 @@ class Renderer
 	{
 		ov.font.color = c;
 	}
-	void resizeText(TextOverlay &ov, FontSize size)
+	void resizeText(TextOverlay &ov, DisplaySize size)
 	{
-		ov.font.size = (int)size;
+		ov.font.size = size;
 	}
 
 	SDL_Renderer *getRenderer() const { return _renderer; }

@@ -1,28 +1,27 @@
 #include "time_manager.h"
 
 Timer::Timer()
-    : _interpolation(0.0), _accumulator(0.0), _loops(0), _frameDuration(0.0),
-      _fps(0.0)
+    : _interpolation(0.0), _accumulator(0.0), _loops(0), _frameCount(0),
+      _currentFrame(0), _frameDuration(0.0), _fps(0.0)
 {
 	_startTime = _frameStartTime = sc::now();
 }
 
 void Timer::_calcFrameTime()
 {
-	static int count = 0, frame = 0;
 	double frameTimeTotal = 0.0f;
 
-	_frameTimes[frame] = _frameDuration;
+	_frameTimes[_currentFrame] = _frameDuration;
 
-	if (++frame >= TARGET_FPS)
-		frame = 0;
-	if (count < TARGET_FPS)
-		count++;
+	if (++_currentFrame >= TARGET_FPS)
+		_currentFrame = 0;
+	if (_frameCount < TARGET_FPS)
+		_frameCount++;
 
-	for (int i = 0; i < count; ++i)
+	for (int i = 0; i < _frameCount; ++i)
 		frameTimeTotal += _frameTimes[i];
 
-	_fps = 1000.0f * count / frameTimeTotal;
+	_fps = 1000.0f * _frameCount / frameTimeTotal;
 }
 
 void Timer::setLoop()
@@ -30,7 +29,6 @@ void Timer::setLoop()
 	_frameDuration = getDelta(_frameStartTime);
 	_frameStartTime = sc::now();
 	_accumulator += _frameDuration;
-	_calcFrameTime();
 	_loops = 0;
 }
 
@@ -55,6 +53,15 @@ void Timer::interpolate()
 	_interpolation = static_cast<double>(_accumulator / SKIP_TICKS);
 }
 
+void Timer::printOut()
+{
+	_calcFrameTime();
+	std::cout << std::fixed << std::setprecision(3)
+		  << "\033[2K\rFPS: " << _fps
+		  << " | Interpolation: " << _interpolation
+		  << " | Run Time: " << getRunTime() << "s";
+}
+
 void Timer::limit()
 {
 	if (SDL_GL_GetSwapInterval() == 0) {
@@ -62,12 +69,4 @@ void Timer::limit()
 		if (sleepTime > 0)
 			SDL_Delay(sleepTime);
 	}
-}
-
-void Timer::printOut()
-{
-	std::cout << std::fixed << std::setprecision(3)
-		  << "\033[2K\rFPS: " << _fps
-		  << " | Interpolation: " << _interpolation
-		  << " | Run Time: " << getRunTime() << "s";
 }

@@ -64,6 +64,7 @@ void Window::init(const char *name, int w, int h, unsigned int f)
 	_name = name;
 	_width = w, _height = h;
 	_flags = f;
+	_vSync = 0;
 
 	_createWindow();
 	_setContextVersion();
@@ -108,9 +109,8 @@ void Window::resize()
 
 void Window::setVsync()
 {
-	static int vs = 0;
-	SDL_GL_SetSwapInterval(vs);
-	vs = (vs + 1 == 2 ? -1 : vs + 1);
+	SDL_GL_SetSwapInterval(_vSync);
+	_vSync = (_vSync + 1 == 2 ? -1 : _vSync + 1);
 
 	std::cout << "\nVsync is ";
 	switch (SDL_GL_GetSwapInterval()) {
