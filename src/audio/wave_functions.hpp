@@ -10,7 +10,7 @@ inline std::uniform_real_distribution<float> d_dist(-1.0, 1.0);
 
 // float (*WaveFunctions[])(float) = {sine, square, triangle, sawtooth, noise};
 
-enum WaveForm { SINE, SQUARE, TRIANGLE, SAWTOOTH, NOISE };
+enum WaveForm { SINE = 0, SQUARE, TRIANGLE, SAWTOOTH, NOISE, NUM_WAVES };
 
 struct Wave {
 	const char *label;
@@ -36,17 +36,10 @@ inline float sawtooth(float phase)
 
 inline float noise(float phase) { return d_dist(rd); }
 
-inline std::unordered_map<WaveForm, Wave> WaveFunctions = {
-    {SINE, {"Sine", &sine}},
-    {SQUARE, {"Square", &square}},
-    {TRIANGLE, {"Triangle", &triangle}},
-    {SAWTOOTH, {"Sawtooth", &sawtooth}},
-    {NOISE, {"Noise", &noise}}};
-
-const inline Wave WaveArray[5] = {{"Sine", &sine},
-				  {"Square", &square},
-				  {"Triangle", &triangle},
-				  {"Sawtooth", &sawtooth},
-				  {"Noise", &noise}};
+const inline Wave WaveArray[WaveForm::NUM_WAVES] = {{"Sine", &sine},
+						    {"Square", &square},
+						    {"Triangle", &triangle},
+						    {"Sawtooth", &sawtooth},
+						    {"Noise", &noise}};
 
 #endif

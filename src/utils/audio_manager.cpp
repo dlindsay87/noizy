@@ -6,8 +6,8 @@ void callbackWrapper(void *userdata, Uint8 *stream, int len)
 	audioSystem->audioCallback(stream);
 }
 
-AudioManager::AudioManager(float volume, int sample_rate, int samples)
-    : _masterVolume(volume), _sampleRate(sample_rate), _samples(samples)
+AudioManager::AudioManager(float volume, int sampleRate, int samples)
+    : _masterVolume(volume), _sampleRate(sampleRate), _samples(samples)
 {
 	_displayBuffer = new int16_t[_samples];
 }
@@ -15,6 +15,11 @@ AudioManager::AudioManager(float volume, int sample_rate, int samples)
 AudioManager::~AudioManager()
 {
 	SDL_CloseAudioDevice(_audioDevice);
+	/*for (auto *g : _generators) {
+		delete g;
+		g = nullptr;
+	}*/
+	_generators.clear();
 	delete[] _displayBuffer;
 }
 

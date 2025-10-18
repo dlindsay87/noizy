@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-#include "audio_base_classes.h"
+#include "base_classes.h"
 
 void callbackWrapper(void *userdata, Uint8 *stream, int len);
 
@@ -27,7 +27,7 @@ class AudioManager
 	void _calcSample(size_t i);
 
       public:
-	AudioManager(float volume = 0.5f, int sample_rate = 48000,
+	AudioManager(float volume = 0.5f, int sampleRate = 48000,
 		     int samples = 1024);
 	~AudioManager();
 

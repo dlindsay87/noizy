@@ -21,12 +21,18 @@ void Keyboard::_intonate(int i)
 void Keyboard::processInput(Input *ip)
 {
 	for (auto &ks : _keyStates) {
-		if (ip->isKeyDown(ks.id)) {
+		/*if (ip->isKeyDown(ks.id)) {
 			ks.state = EnvelopeState::Attack;
 			ks.amp = 1.0f;
 		} else {
 			ks.state = EnvelopeState::Idle;
 			ks.amp = 0.0f;
+		}*/
+		if (ip->isKeyPressed(ks.id)) {
+			ks.state = EnvelopeState::Attack;
+		} else if (!ip->isKeyDown(ks.id) &&
+			   ks.state != EnvelopeState::Idle) {
+			ks.state = EnvelopeState::Release;
 		}
 	}
 };
@@ -34,7 +40,11 @@ void Keyboard::processInput(Input *ip)
 void Keyboard::generate(Sample &s)
 {
 	for (auto &ks : _keyStates) {
-		//_envelope.apply(ks);
+
+		for (auto &m : _modifiers) {
+			m->apply(ks);
+		}
+
 		if (ks.state != EnvelopeState::Idle) {
 			s.value += ks.amp * _wave.waveFunction(ks.phase);
 

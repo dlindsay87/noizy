@@ -10,3 +10,6 @@ Select knobs by clicking them and adjust their values with your scroll wheel.
 - OpenGL 4.6
 - GLEW 2.2.0
 - GLM 0.9.9.8
+
+**Known Issues**
+Destructors of class vector members seem to be called before class can call clean up in its destructor. Gotta investigate to prevent memory loss or something

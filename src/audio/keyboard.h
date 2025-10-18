@@ -3,8 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-#include "audio_base_classes.h"
-#include "input_manager.h"
+#include "base_classes.h"
 #include "wave_functions.hpp"
 
 #include <cmath>
@@ -52,6 +51,7 @@ class Keyboard : public IGenerator
 	Keyboard(int octave = 0);
 
 	void processInput(Input *ip);
+	virtual void draw(Renderer *ren, float intp) {}
 
 	void generate(Sample &s) override;
 };

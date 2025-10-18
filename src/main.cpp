@@ -5,6 +5,7 @@
 #include "window.h"
 
 #include "audio_manager.h"
+#include "envelope.h"
 #include "keyboard.h"
 #include "oscilloscope.h"
 
@@ -21,6 +22,7 @@ class Game
 	AudioManager audioManager;
 	Keyboard keyboard;
 	Oscilloscope osc;
+	Envelope envelope;
 
 	IKnob<float> knob;
 	IKnob<int> knob1;
@@ -39,6 +41,8 @@ class Game
 
 		audioManager.init();
 		audioManager.addGenerator(&keyboard);
+		keyboard.addModifier(&envelope);
+
 		osc.init({512, 160}, {480, 240}, audioManager.getBufferLen());
 
 		knob.init("Test", 2.3f, {256, 160}, DS::MID, {-60.0f, 180.0f},
@@ -66,6 +70,7 @@ class Game
 
 		window.processInput(&input);
 		keyboard.processInput(&input);
+		// envelope.processInput(&input);
 
 		knob.processInput(&input);
 		knob1.processInput(&input);
