@@ -14,7 +14,7 @@ struct Sample {
 	size_t idx;
 };
 
-enum EnvelopeState { Idle = 0, Attack, Decay, Sustain, Release, NUM_STATES };
+enum EnvelopeState { Idle = 0, Attack, Decay, Sustain, Release };
 
 struct ToneState {
 	unsigned int id;

@@ -7,15 +7,15 @@
 #include "input_manager.h"
 #include "renderer.h"
 
-#ifndef N_POINTS
-#define N_POINTS 16
+#ifndef K_POINTS
+#define K_POINTS 16
 #endif
 
 struct KnobForm {
 	TextOverlay labelOV;
 	TextOverlay valueOV;
 
-	glm::ivec2 pointArr[N_POINTS];
+	glm::ivec2 pointArr[K_POINTS];
 	glm::ivec2 pos;
 	glm::vec2 rotationLimits;
 	int radius;
@@ -128,17 +128,11 @@ template <typename U> class IKnob
 			else if (_value < _valueLimits.y &&
 				 (ip->getWheelDelta() > 0))
 				_value += _step;
-
-			_value =
-			    std::clamp(_value, _valueLimits.x, _valueLimits.y);
 		}
 	}
 
 	virtual void update()
 	{
-		// static U oldValue;
-
-		// if (oldValue != _value) {
 		float angle = ((_value - _valueLimits.x) * _displayScale +
 			       _knob.rotationLimits.x) *
 			      M_PI / 180;
@@ -147,12 +141,11 @@ template <typename U> class IKnob
 			int px = static_cast<int>(_knob.radius * cos(angle));
 			int py = static_cast<int>(_knob.radius * sin(angle));
 			p = {_knob.pos.x - px, _knob.pos.y - py};
-			angle += 2 * M_PI / N_POINTS;
+			angle += 2 * M_PI / K_POINTS;
 		}
 
-		// oldValue = _value;
+		_value = std::clamp(_value, _valueLimits.x, _valueLimits.y);
 		_knob.valueOV.text = _valToString();
-		//}
 	}
 
 	virtual void draw(Renderer *ren, float intp)

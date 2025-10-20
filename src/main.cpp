@@ -10,6 +10,7 @@
 #include "oscilloscope.h"
 
 #include "base_knob.h"
+#include "button.h"
 
 class Game
 {
@@ -27,6 +28,9 @@ class Game
 	IKnob<float> knob;
 	IKnob<int> knob1;
 	IKnob<int> knob2;
+
+	IButton<int> button1;
+	IButton<float> button2;
 
 	SDL_Event e;
 	bool game_on;
@@ -51,6 +55,9 @@ class Game
 			   {0, 5}, 1);
 		knob2.init("Test2", 0, {320, 380}, DS::SMALL, {-60.0f, 180.0f},
 			   {0, 5}, 1);
+
+		button1.init("Test1", 0, {640, 380}, {64, 32}, {-1, 5});
+		button2.init("Test2", 0.2f, {896, 380}, {96, 16}, {0.0f, 3.3f});
 	}
 
 	~Game()
@@ -76,6 +83,9 @@ class Game
 		knob1.processInput(&input);
 		knob2.processInput(&input);
 
+		button1.processInput(&input);
+		button2.processInput(&input);
+
 		if (input.isKeyPressed(SDL_SCANCODE_Z) ||
 		    input.isKeyPressed(SDL_SCANCODE_ESCAPE) || input.willExit())
 			game_on = false;
@@ -89,6 +99,9 @@ class Game
 		knob1.update();
 		knob2.update();
 
+		button1.update();
+		button2.update();
+
 		timer.update();
 	}
 
@@ -100,6 +113,9 @@ class Game
 		knob.draw(&renderer, intp);
 		knob1.draw(&renderer, intp);
 		knob2.draw(&renderer, intp);
+
+		button1.draw(&renderer, intp);
+		button2.draw(&renderer, intp);
 
 		renderer.present();
 	}
