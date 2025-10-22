@@ -45,16 +45,15 @@ class Keyboard : public IGenerator
 	Wave _wave;
 	int _octave;
 
-	void _intonate();
-
       public:
 	Keyboard(int octave = 4);
+
+	void intonate(int o);
 
 	void processInput(Input *ip);
 	virtual void draw(Renderer *ren, float intp) {}
 
 	void generate(Sample &s) override;
-	void changeOctave(int o);
 };
 
 #endif

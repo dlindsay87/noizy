@@ -9,7 +9,7 @@
 #include "keyboard.h"
 #include "oscilloscope.h"
 
-#include "base_knob.h"
+#include "knob.h"
 #include "spin_box.h"
 
 class Game
@@ -98,8 +98,7 @@ class Game
 		knob2.update();
 
 		spinbox.update();
-
-		keyboard.changeOctave(spinbox.getValue());
+		keyboard.intonate(spinbox.getValue());
 
 		timer.update();
 	}

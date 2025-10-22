@@ -2,7 +2,7 @@
 #define __ENVELOPE_H__
 
 #include "base_classes.h"
-#include "base_knob.h"
+#include "knob.h"
 
 class Envelope : public IModifier
 {

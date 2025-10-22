@@ -12,34 +12,32 @@ class SpinBox
 	TextOverlay labelOV;
 	TextOverlay valueOV;
 
-	glm::ivec2 _pos, _scale;
 	glm::ivec2 _valueLimits;
-	int _val;
+	int _value;
 
-	TriButton _upButton, _downButton;
+	TriButton<int> _upButton, _downButton;
 	Box _box;
 
 	virtual std::string _valToString() const
 	{
 		std::stringstream ss;
-		ss << std::fixed << std::setprecision(2) << _val;
+		ss << std::fixed << std::setprecision(2) << _value;
 		return ss.str();
 	}
 
       public:
 	SpinBox() {}
 
-	void init(const char *label, int value, glm::ivec2 limits,
-		  glm::ivec2 pos, glm::ivec2 scale)
+	void init(const char *label, int val, glm::ivec2 limits, glm::ivec2 pos,
+		  glm::ivec2 scale)
 	{
 		_box.init(pos, scale);
-		_upButton.init({pos.x, pos.y - scale.y}, scale, false, &_val);
-		_downButton.init({pos.x, pos.y + scale.y}, scale, true, &_val);
+		_upButton.init({pos.x, pos.y - scale.y}, scale, false, &_value);
+		_downButton.init({pos.x, pos.y + scale.y}, scale, true,
+				 &_value);
 
-		_pos = pos;
-		_scale = scale;
 		_valueLimits = limits;
-		_val = value;
+		_value = val;
 
 		labelOV.text = label;
 		labelOV.font.color = ColorSelection[DC::NEUTRAL_W];
@@ -57,7 +55,7 @@ class SpinBox
 	{
 		_upButton.processInput(ip);
 		_downButton.processInput(ip);
-		_val = std::clamp(_val, _valueLimits.x, _valueLimits.y);
+		_value = std::clamp(_value, _valueLimits.x, _valueLimits.y);
 	}
 
 	void update() { valueOV.text = _valToString(); }
@@ -72,7 +70,7 @@ class SpinBox
 		_upButton.draw(ren, intp);
 	}
 
-	int getValue() { return _val; }
+	int getValue() { return _value; }
 };
 
 #endif
