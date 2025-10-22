@@ -11,5 +11,8 @@ Select knobs by clicking them and adjust their values with your scroll wheel.
 - GLEW 2.2.0
 - GLM 0.9.9.8
 
+**The Latest**
+Implemented an octave modifier which is pretty cool. Don't have the patience to clean up so it's quite spaghetti right now. Gonna refactor the knob classes.
+
 **Known Issues**
 Destructors of class vector members seem to be called before class can call clean up in its destructor. Gotta investigate to prevent memory loss or something

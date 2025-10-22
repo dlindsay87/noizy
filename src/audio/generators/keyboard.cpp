@@ -2,9 +2,10 @@
 
 Keyboard::Keyboard(int octave) : _octave(octave)
 {
+	_intonate();
+
 	for (int i = 0; i < N_KEYS; i++) {
 		_keyStates[i].id = _scanCodes[i];
-		_intonate(i);
 		_keyStates[i].amp = 0.0f;
 		_keyStates[i].phase = 0.0f;
 		_keyStates[i].state = EnvelopeState::Idle;
@@ -12,10 +13,12 @@ Keyboard::Keyboard(int octave) : _octave(octave)
 	_wave = WaveArray[SINE];
 }
 
-void Keyboard::_intonate(int i)
+void Keyboard::_intonate()
 {
-	_keyStates[i].freq =
-	    A_FREQ * std::powf(2.0f, i / 12.0f) * std::pow(2, _octave);
+	for (int i = 0; i < N_KEYS; i++) {
+		_keyStates[i].freq = A_FREQ * std::powf(2.0f, i / 12.0f) *
+				     std::pow(2, _octave - 4);
+	}
 }
 
 void Keyboard::processInput(Input *ip)
@@ -60,4 +63,12 @@ void Keyboard::generate(Sample &s)
 	}
 
 	return;
+}
+
+void Keyboard::changeOctave(int o)
+{
+	if (o != _octave) {
+		_octave = o;
+		_intonate();
+	}
 }

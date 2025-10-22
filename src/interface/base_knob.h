@@ -129,6 +129,7 @@ template <typename U> class IKnob
 				 (ip->getWheelDelta() > 0))
 				_value += _step;
 		}
+		_value = std::clamp(_value, _valueLimits.x, _valueLimits.y);
 	}
 
 	virtual void update()
@@ -144,7 +145,6 @@ template <typename U> class IKnob
 			angle += 2 * M_PI / K_POINTS;
 		}
 
-		_value = std::clamp(_value, _valueLimits.x, _valueLimits.y);
 		_knob.valueOV.text = _valToString();
 	}
 
