@@ -2,7 +2,7 @@
 Noizy is an experiment with sound generation using the SDL2 library.
 You use the top two alphabetic rows of your keyboard to generate sine waves.
 The combined sine waves are displayed in the window.
-Select knobs by clicking them and adjust their values with your scroll wheel.
+Select knobs by clicking them and adjust their values with your scroll wheel. Toggle spin boxes by clicking their arrows.
 
 **External Dependencies**
 - GCC 14.2.0
@@ -12,7 +12,9 @@ Select knobs by clicking them and adjust their values with your scroll wheel.
 - GLM 0.9.9.8
 
 **The Latest**
-Implemented an octave modifier which is pretty cool. Don't have the patience to clean up so it's quite spaghetti right now. Gonna refactor the knob classes.
+
+Implemented an octave modifier which is pretty cool. Don't have the patience to clean up so it's quite spaghetti right now. Gonna refactor the knob classes. Oh yeah, now we got a wave select knob. Fixed the noise function.
 
 **Known Issues**
-Destructors of class vector members seem to be called before class can call clean up in its destructor. Gotta investigate to prevent memory loss or something
+
+Destructors of class vector members seem to be called before class can call clean up in its destructor. Gotta investigate to prevent memory loss or something. Got some incomplete classes. Need to work on inheritance for interface items.

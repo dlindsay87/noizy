@@ -13,7 +13,7 @@ typedef std::chrono::duration<double, std::milli> dd;
 const int TARGET_FPS = 60;
 const double FRAME_DURATION = 1000.0 / TARGET_FPS; // 16.67 ms
 
-const int TICKS_PER_SECOND = 25;
+const int TICKS_PER_SECOND = 20;
 const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 const int MAX_FRAMESKIP = TICKS_PER_SECOND / 5;
 

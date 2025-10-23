@@ -49,6 +49,7 @@ class Keyboard : public IGenerator
 	Keyboard(int octave = 4);
 
 	void intonate(int o);
+	void selectWave(int w);
 
 	void processInput(Input *ip);
 	virtual void draw(Renderer *ren, float intp) {}

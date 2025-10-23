@@ -32,6 +32,13 @@ template <typename U> class IKnob
       public:
 	IKnob() {}
 
+	IKnob(const char *label, U value, glm::ivec2 pos, DisplaySize radius,
+	      glm::vec2 rotLimits, glm::vec<2, U, glm::lowp> valLimits,
+	      float step)
+	{
+		init(label, value, pos, radius, rotLimits, valLimits, step);
+	}
+
 	void init(const char *label, U value, glm::ivec2 pos,
 		  DisplaySize radius, glm::vec2 rotLimits,
 		  glm::vec<2, U, glm::lowp> valLimits, float step)
@@ -56,7 +63,6 @@ template <typename U> class IKnob
 		labelOV.pos.x = pos.x;
 		labelOV.pos.y = pos.y - (radius + labelOV.font.size);
 
-		valueOV.text = _valToString();
 		valueOV.font.color = ColorSelection[DC::NEUTRAL_W];
 		valueOV.font.size = radius / 2;
 		valueOV.pos.x = pos.x;
@@ -104,13 +110,13 @@ template <typename U> class IKnob
 			      M_PI / 180;
 
 		_knob.orient(angle);
-
-		valueOV.text = _valToString();
 	}
+
+	virtual void applyCat(const char *label) { valueOV.text = label; }
+	virtual void applyNum() { valueOV.text = _valToString(); }
 
 	virtual void draw(Renderer *ren, float intp)
 	{
-
 		ren->drawCachedText(labelOV);
 		ren->drawDynamicText(valueOV);
 

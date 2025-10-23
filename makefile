@@ -44,4 +44,4 @@ clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
 val:
-	valgrind --leak-check=full --track-origins=yes --suppressions="valgrind_suppressions.txt" --log-file="valgrind_log.txt" -s ./main
+	valgrind --log-file="valgrind_log.txt" ./$(TARGET)

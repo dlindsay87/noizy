@@ -25,9 +25,7 @@ class Game
 	Oscilloscope osc;
 	Envelope envelope;
 
-	IKnob<float> knob;
-	IKnob<int> knob1;
-	IKnob<int> knob2;
+	IKnob<int> knob;
 
 	SpinBox spinbox;
 
@@ -48,12 +46,8 @@ class Game
 
 		osc.init({512, 160}, {480, 240}, audioManager.getBufferLen());
 
-		knob.init("Test", 2.3f, {256, 160}, DS::MID, {-60.0f, 180.0f},
-			  {0.0f, 26.1f}, 0.4f);
-		knob1.init("Test1", 0, {192, 380}, DS::SMALL, {-60.0f, 180.0f},
-			   {0, 5}, 1);
-		knob2.init("Test2", 0, {320, 380}, DS::SMALL, {-60.0f, 180.0f},
-			   {0, 5}, 1);
+		knob.init("Wave", 0, {256, 160}, DS::MID, {-60.0f, 180.0f},
+			  {0, WaveForm::NUM_WAVES - 1}, 1);
 
 		spinbox.init("Octave", 4, {0, 8}, {640, 380},
 			     {DS::MID, DS::SMALL});
@@ -79,9 +73,6 @@ class Game
 		// envelope.processInput(&input);
 
 		knob.processInput(&input);
-		knob1.processInput(&input);
-		knob2.processInput(&input);
-
 		spinbox.processInput(&input);
 
 		if (input.isKeyPressed(SDL_SCANCODE_Z) ||
@@ -94,8 +85,8 @@ class Game
 		window.update(0);
 
 		knob.update();
-		knob1.update();
-		knob2.update();
+		knob.applyCat(WaveArray[knob.getValue()].label);
+		keyboard.selectWave(knob.getValue());
 
 		spinbox.update();
 		keyboard.intonate(spinbox.getValue());
@@ -109,8 +100,6 @@ class Game
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
 
 		knob.draw(&renderer, intp);
-		knob1.draw(&renderer, intp);
-		knob2.draw(&renderer, intp);
 
 		spinbox.draw(&renderer, intp);
 

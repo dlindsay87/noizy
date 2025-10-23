@@ -21,7 +21,7 @@ inline float sine(float phase) { return std::sin(phase); }
 
 inline float square(float phase)
 {
-	return 2.0 * std::signbit(sine(phase)) - 1.0;
+	return 2.0 * std::signbit(-sine(phase)) - 1.0;
 }
 
 inline float triangle(float phase)
@@ -34,7 +34,7 @@ inline float sawtooth(float phase)
 	return 2.0 / M_PI * std::atan(std::tan(phase / 2.0));
 }
 
-inline float noise(float phase) { return d_dist(rd); }
+inline float noise(float phase) { return d_dist(mt_engine); }
 
 const inline Wave WaveArray[WaveForm::NUM_WAVES] = {{"Sine", &sine},
 						    {"Square", &square},

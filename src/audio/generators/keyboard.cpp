@@ -9,7 +9,7 @@ Keyboard::Keyboard(int octave)
 		_keyStates[i].phase = 0.0f;
 		_keyStates[i].state = EnvelopeState::Idle;
 	}
-	_wave = WaveArray[SINE];
+	//_wave = WaveArray[SINE];
 }
 
 void Keyboard::intonate(int o)
@@ -23,6 +23,8 @@ void Keyboard::intonate(int o)
 		_octave = o;
 	}
 }
+
+void Keyboard::selectWave(int w) { _wave = WaveArray[w]; }
 
 void Keyboard::processInput(Input *ip)
 {
