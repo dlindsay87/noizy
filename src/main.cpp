@@ -28,7 +28,12 @@ class Game
 	IKnob<int> wknob;
 	IKnob<float> vknob;
 
-	SpinBox spinbox;
+	IKnob<float> aknob;
+	IKnob<float> dknob;
+	IKnob<float> sknob;
+	IKnob<float> rknob;
+
+	SpinBox obox;
 
 	SDL_Event e;
 	bool game_on;
@@ -47,15 +52,24 @@ class Game
 
 		osc.init({512, 160}, {480, 240}, audioManager.getBufferLen());
 
-		wknob.init("Wave", &keyboard.referenceWave(), {60, 100},
+		wknob.init("Wave", &keyboard.referenceWave(), {66, 100},
 			   DS::SMALL, {-60.0f, 180.0f},
 			   {0, WaveForm::NUM_WAVES - 1}, 1);
 
-		vknob.init("Volume", &audioManager.referenceVolume(), {60, 220},
+		vknob.init("Volume", &audioManager.referenceVolume(), {66, 220},
 			   DS::SMALL, {-60.0f, 180.0f}, {-40.0f, 0.0f}, 1.0f);
 
-		spinbox.init("Octave", &keyboard.referenceOctave(), {0, 8},
-			     {180, 160}, {DS::MID, DS::SMALL});
+		aknob.init("Attack", &envelope.referenceAttack(), {316, 100},
+			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
+		dknob.init("Decay", &envelope.referenceDecay(), {437, 100},
+			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
+		sknob.init("Sustain", &envelope.referenceSustain(), {316, 220},
+			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 1.0f}, 0.1f);
+		rknob.init("Release", &envelope.referenceRelease(), {437, 220},
+			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
+
+		obox.init("Octave", &keyboard.referenceOctave(), {0, 8},
+			  {174, 160}, {DS::MID, DS::SMALL});
 	}
 
 	~Game()
@@ -79,7 +93,13 @@ class Game
 
 		wknob.processInput(&input);
 		vknob.processInput(&input);
-		spinbox.processInput(&input);
+
+		aknob.processInput(&input);
+		dknob.processInput(&input);
+		sknob.processInput(&input);
+		rknob.processInput(&input);
+
+		obox.processInput(&input);
 
 		if (input.isKeyPressed(SDL_SCANCODE_Z) ||
 		    input.isKeyPressed(SDL_SCANCODE_ESCAPE) || input.willExit())
@@ -93,18 +113,33 @@ class Game
 		wknob.applyCat(WaveArray[wknob.getValue()].label);
 		vknob.applyNum();
 
+		aknob.applyNum();
+		dknob.applyNum();
+		sknob.applyNum();
+		rknob.applyNum();
+
 		timer.update();
 	}
 
 	void render(float intp)
 	{
 		renderer.clear();
+
+		SDL_SetRenderDrawColor(renderer.getRenderer(), 255, 255, 255,
+				       255);
+		SDL_RenderDrawLine(renderer.getRenderer(), 240, 40, 240, 280);
+
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
 
 		wknob.draw(&renderer, intp);
 		vknob.draw(&renderer, intp);
 
-		spinbox.draw(&renderer, intp);
+		aknob.draw(&renderer, intp);
+		dknob.draw(&renderer, intp);
+		sknob.draw(&renderer, intp);
+		rknob.draw(&renderer, intp);
+
+		obox.draw(&renderer, intp);
 
 		renderer.present();
 	}
