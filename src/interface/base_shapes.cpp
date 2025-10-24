@@ -93,12 +93,11 @@ void Triangle::draw(Renderer *ren, float intp)
 	}
 }
 
-void Circle::init(glm::ivec2 pos, int radius, float angle)
+void Circle::init(glm::ivec2 pos, int radius)
 {
 	_pos = pos;
 	_scale = glm::ivec2(radius);
-
-	orient(angle);
+	rotate(0.0f);
 }
 
 bool Circle::isOverlapping(glm::ivec2 mousePos) const
@@ -107,7 +106,7 @@ bool Circle::isOverlapping(glm::ivec2 mousePos) const
 		    pow(mousePos.y - _pos.y, 2)) <= _scale.x;
 }
 
-void Circle::orient(float angle)
+void Circle::rotate(float angle)
 {
 	for (auto &p : _pointArr) {
 		int px = static_cast<int>(_scale.x * cos(angle));

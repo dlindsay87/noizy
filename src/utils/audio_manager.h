@@ -27,7 +27,7 @@ class AudioManager
 	void _calcSample(size_t i);
 
       public:
-	AudioManager(float volume = 0.5f, int sampleRate = 48000,
+	AudioManager(float volume = -20.0f, int sampleRate = 48000,
 		     int samples = 1024);
 	~AudioManager();
 
@@ -41,6 +41,8 @@ class AudioManager
 
 	const int16_t *getDisplayBuffer() const { return _displayBuffer; }
 	size_t getBufferLen() const { return static_cast<size_t>(_samples); }
+
+	float &referenceVolume() { return _masterVolume; }
 };
 
 #endif

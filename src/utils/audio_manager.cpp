@@ -30,12 +30,15 @@ void AudioManager::_calcSample(size_t i)
 		g->generate(s);
 	}
 
+	float db = (_masterVolume > -40.0f)
+		       ? std::pow(10.0, _masterVolume / 20.0)
+		       : 0.0f;
+
 	_displayBuffer[i] = static_cast<int16_t>(
-	    std::clamp(s.displayValue * _masterVolume, -1.0f, 1.0f) *
-	    INT16_MAX);
+	    std::clamp(s.displayValue * db, -1.0f, 1.0f) * INT16_MAX);
 
 	_buffer[i] = static_cast<int16_t>(
-	    std::clamp(s.value * _masterVolume, -1.0f, 1.0f) * INT16_MAX);
+	    std::clamp(s.value * db, -1.0f, 1.0f) * INT16_MAX);
 }
 
 void AudioManager::init()

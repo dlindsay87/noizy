@@ -42,19 +42,24 @@ class Keyboard : public IGenerator
 	};
 
 	ToneState _keyStates[N_KEYS];
-	Wave _wave;
-	int _octave;
+	int _wave, _oldWave = -1;
+	int _octave, _oldOctave = -1;
+
+	float (*_waveFunction)(float) = 0;
+
+	void _intonate();
+	void _applyWave();
 
       public:
-	Keyboard(int octave = 4);
-
-	void intonate(int o);
-	void selectWave(int w);
+	Keyboard(int wave = 0, int octave = 4);
 
 	void processInput(Input *ip);
 	virtual void draw(Renderer *ren, float intp) {}
 
 	void generate(Sample &s) override;
+
+	int &referenceOctave() { return _octave; }
+	int &referenceWave() { return _wave; }
 };
 
 #endif

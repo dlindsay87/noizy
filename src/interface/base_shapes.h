@@ -68,11 +68,11 @@ class Circle : public IShape
 	glm::ivec2 _pointArr[K_POINTS];
 
       public:
-	virtual void init(glm::ivec2 pos, int radius, float angle);
+	virtual void init(glm::ivec2 pos, int radius);
 
 	virtual bool isOverlapping(glm::ivec2 mousePos) const;
 
-	virtual void orient(float angle);
+	virtual void rotate(float angle);
 
 	virtual void draw(Renderer *ren, float intp);
 };

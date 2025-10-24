@@ -14,7 +14,7 @@ template <typename U> class IKnob
 	TextOverlay valueOV;
 	Circle _knob;
 
-	U _value;
+	U *_valueRef;
 	glm::vec<2, U, glm::lowp> _valueLimits;
 	glm::vec2 _rotationLimits;
 	float _displayScale;
@@ -25,25 +25,32 @@ template <typename U> class IKnob
 	virtual std::string _valToString() const
 	{
 		std::stringstream ss;
-		ss << std::fixed << std::setprecision(2) << _value;
+		ss << std::fixed << std::setprecision(2) << *_valueRef;
 		return ss.str();
+	}
+
+	virtual float _calcRotation()
+	{
+		return ((*_valueRef - _valueLimits.x) * _displayScale +
+			_rotationLimits.x) *
+		       M_PI / 180;
 	}
 
       public:
 	IKnob() {}
 
-	IKnob(const char *label, U value, glm::ivec2 pos, DisplaySize radius,
+	IKnob(const char *label, U *ref, glm::ivec2 pos, DisplaySize radius,
 	      glm::vec2 rotLimits, glm::vec<2, U, glm::lowp> valLimits,
 	      float step)
 	{
-		init(label, value, pos, radius, rotLimits, valLimits, step);
+		init(label, ref, pos, radius, rotLimits, valLimits, step);
 	}
 
-	void init(const char *label, U value, glm::ivec2 pos,
-		  DisplaySize radius, glm::vec2 rotLimits,
-		  glm::vec<2, U, glm::lowp> valLimits, float step)
+	void init(const char *label, U *ref, glm::ivec2 pos, DisplaySize radius,
+		  glm::vec2 rotLimits, glm::vec<2, U, glm::lowp> valLimits,
+		  float step)
 	{
-		_value = value;
+		_valueRef = ref;
 		_valueLimits = valLimits;
 		_rotationLimits = rotLimits;
 		_displayScale =
@@ -51,11 +58,7 @@ template <typename U> class IKnob
 		_step = step;
 		_selected = false;
 
-		float angle = ((_value - _valueLimits.x) * _displayScale +
-			       _rotationLimits.x) *
-			      M_PI / 180;
-
-		_knob.init(pos, radius, angle);
+		_knob.init(pos, radius);
 
 		labelOV.text = label;
 		labelOV.font.color = ColorSelection[DC::NEUTRAL_W];
@@ -93,23 +96,15 @@ template <typename U> class IKnob
 		}
 
 		if (_selected) {
-			if (_value > _valueLimits.x &&
+			if (*_valueRef > _valueLimits.x &&
 			    (ip->getWheelDelta() < 0))
-				_value -= _step;
-			else if (_value < _valueLimits.y &&
+				*_valueRef -= _step;
+			else if (*_valueRef < _valueLimits.y &&
 				 (ip->getWheelDelta() > 0))
-				_value += _step;
+				*_valueRef += _step;
 		}
-		_value = std::clamp(_value, _valueLimits.x, _valueLimits.y);
-	}
-
-	virtual void update()
-	{
-		float angle = ((_value - _valueLimits.x) * _displayScale +
-			       _rotationLimits.x) *
-			      M_PI / 180;
-
-		_knob.orient(angle);
+		*_valueRef =
+		    std::clamp(*_valueRef, _valueLimits.x, _valueLimits.y);
 	}
 
 	virtual void applyCat(const char *label) { valueOV.text = label; }
@@ -120,12 +115,13 @@ template <typename U> class IKnob
 		ren->drawCachedText(labelOV);
 		ren->drawDynamicText(valueOV);
 
+		_knob.rotate(_calcRotation());
 		_knob.draw(ren, intp);
 	}
 
 	virtual const char *getLabel() const { return labelOV.text.c_str(); }
 
-	U getValue() const { return _value; }
+	U getValue() const { return *_valueRef; }
 };
 
 /*template void IKnob::init<float>(const char *label, float value, glm::ivec2

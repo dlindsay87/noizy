@@ -18,6 +18,8 @@ enum EnvelopeState { Idle = 0, Attack, Decay, Sustain, Release };
 
 struct ToneState {
 	unsigned int id;
+	size_t idx;
+
 	float freq = 1.0f, amp = 0.0f;
 	float phase = 0.0f, peak = 0.0f;
 

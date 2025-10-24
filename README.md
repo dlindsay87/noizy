@@ -1,7 +1,7 @@
 # What's that Noiz?
 Noizy is an experiment with sound generation using the SDL2 library.
-You use the top two alphabetic rows of your keyboard to generate sine waves.
-The combined sine waves are displayed in the window.
+You use the top two alphabetic rows of your keyboard to generate sound waves.
+The combined waves are displayed in the window.
 Select knobs by clicking them and adjust their values with your scroll wheel. Toggle spin boxes by clicking their arrows.
 
 **External Dependencies**
@@ -13,7 +13,7 @@ Select knobs by clicking them and adjust their values with your scroll wheel. To
 
 **The Latest**
 
-Implemented an octave modifier which is pretty cool. Don't have the patience to clean up so it's quite spaghetti right now. Gonna refactor the knob classes. Oh yeah, now we got a wave select knob. Fixed the noise function.
+Volume, octave, and wave select implemented. Made referencing the modded values more intuitive.
 
 **Known Issues**
 
