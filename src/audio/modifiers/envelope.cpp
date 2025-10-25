@@ -1,6 +1,6 @@
 #include "envelope.h"
 
-void Envelope::apply(ToneState &toneState)
+void Envelope::applyState(ToneState &toneState)
 {
 	EnvelopeState &state = toneState.state;
 	float &level = toneState.amp;

@@ -17,7 +17,8 @@ class Envelope : public IModifier
 
 	void draw(Renderer *ren, float intp) {}
 
-	void apply(ToneState &toneState);
+	void applyState(ToneState &toneState);
+	void applySample(Sample &s) {};
 
 	float &referenceAttack() { return _attack; }
 	float &referenceDecay() { return _decay; }

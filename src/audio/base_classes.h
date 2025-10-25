@@ -9,8 +9,9 @@
 #include "renderer.h"
 
 struct Sample {
-	float value;
-	float displayValue;
+	float value, displayValue;
+	float freqMod, ampMod;
+
 	size_t idx;
 };
 
@@ -20,8 +21,8 @@ struct ToneState {
 	unsigned int id;
 	size_t idx;
 
-	float freq = 1.0f, amp = 0.0f;
-	float phase = 0.0f, peak = 0.0f;
+	float amp, peak;
+	float freq, phase;
 
 	EnvelopeState state;
 };
@@ -49,7 +50,8 @@ class IComponent
 class IModifier : public IComponent
 {
       public:
-	virtual void apply(ToneState &ts) = 0;
+	virtual void applyState(ToneState &ts) = 0;
+	virtual void applySample(Sample &s) = 0;
 };
 
 class IGenerator : public IComponent

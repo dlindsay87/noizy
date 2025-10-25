@@ -42,13 +42,17 @@ class Keyboard : public IGenerator
 	};
 
 	ToneState _keyStates[N_KEYS];
-	int _wave, _oldWave = -1;
-	int _octave, _oldOctave = -1;
+	int _wave, _oldWave;
+	int _octave, _oldOctave;
 
+	float _intonate(int i);
 	float (*_waveFunction)(float) = 0;
 
-	void _intonate();
+	void _applyIntonation();
 	void _applyWave();
+
+	float _advancePhase(float &phase, float amp, float freq);
+	float _displayPhase(size_t idx, float amp, float freq);
 
       public:
 	Keyboard(int wave = 0, int octave = 4);

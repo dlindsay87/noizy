@@ -13,8 +13,8 @@ Select knobs by clicking them and adjust their values with your scroll wheel. To
 
 **The Latest**
 
-Volume, octave, and wave select implemented. Made referencing the modded values more intuitive.
+SUPER BASIC LFOs!!! DM for tips on better implementation.
 
 **Known Issues**
 
-Destructors of class vector members seem to be called before class can call clean up in its destructor. Gotta investigate to prevent memory loss or something. Got some incomplete classes. Need to work on inheritance for interface items.
+Messy af.

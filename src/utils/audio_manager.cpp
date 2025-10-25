@@ -25,7 +25,14 @@ AudioManager::~AudioManager()
 
 void AudioManager::_calcSample(size_t i)
 {
-	Sample s = {0.0f, 0.0f, i};
+	Sample s = {
+	    .value = 0.0f,
+	    .displayValue = 0.0f,
+	    .freqMod = 0.0f,
+	    .ampMod = 0.0f,
+	    .idx = i,
+	};
+
 	for (auto &g : _generators) {
 		g->generate(s);
 	}

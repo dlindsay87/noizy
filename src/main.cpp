@@ -7,6 +7,7 @@
 #include "audio_manager.h"
 #include "envelope.h"
 #include "keyboard.h"
+#include "lfo.h"
 #include "oscilloscope.h"
 
 #include "knob.h"
@@ -22,6 +23,8 @@ class Game
 
 	AudioManager audioManager;
 	Keyboard keyboard;
+	fLFO f_LFO;
+	aLFO a_LFO;
 	Oscilloscope osc;
 	Envelope envelope;
 
@@ -33,6 +36,34 @@ class Game
 	IKnob<float> sknob;
 	IKnob<float> rknob;
 
+	TextOverlay fOV = {
+	    .text = "FreqMod:",
+	    .font =
+		{
+		    .size = DS::SMALL,
+		    .color = ColorSelection[DC::NEUTRAL_W],
+		},
+	    .pos = {480, 340},
+
+	};
+	IKnob<int> f_lfowave;
+	IKnob<float> f_lfodepth;
+	IKnob<float> f_lforate;
+
+	TextOverlay aOV = {
+	    .text = "Amp Mod:",
+	    .font =
+		{
+		    .size = DS::SMALL,
+		    .color = ColorSelection[DC::NEUTRAL_W],
+		},
+	    .pos = {480, 450},
+
+	};
+	IKnob<int> a_lfowave;
+	IKnob<float> a_lfodepth;
+	IKnob<float> a_lforate;
+
 	SpinBox obox;
 
 	SDL_Event e;
@@ -43,33 +74,53 @@ class Game
 	{
 		initSDL();
 
-		window.init("Test", 1024, 480);
+		window.init("Test", 1024, 512);
 		renderer.init(window.getWindow());
 
 		audioManager.init();
 		audioManager.addGenerator(&keyboard);
 		keyboard.addModifier(&envelope);
+		keyboard.addModifier(&f_LFO);
+		keyboard.addModifier(&a_LFO);
 
-		osc.init({512, 160}, {480, 240}, audioManager.getBufferLen());
+		osc.init({512, 150}, {480, 240}, audioManager.getBufferLen());
 
-		wknob.init("Wave", &keyboard.referenceWave(), {66, 100},
+		wknob.init("Wave", &keyboard.referenceWave(), {66, 90},
 			   DS::SMALL, {-60.0f, 180.0f},
 			   {0, WaveForm::NUM_WAVES - 1}, 1);
 
-		vknob.init("Volume", &audioManager.referenceVolume(), {66, 220},
+		vknob.init("Volume", &audioManager.referenceVolume(), {66, 210},
 			   DS::SMALL, {-60.0f, 180.0f}, {-40.0f, 0.0f}, 1.0f);
 
-		aknob.init("Attack", &envelope.referenceAttack(), {316, 100},
+		aknob.init("Attack", &envelope.referenceAttack(), {316, 90},
 			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
-		dknob.init("Decay", &envelope.referenceDecay(), {437, 100},
+		dknob.init("Decay", &envelope.referenceDecay(), {437, 90},
 			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
-		sknob.init("Sustain", &envelope.referenceSustain(), {316, 220},
+		sknob.init("Sustain", &envelope.referenceSustain(), {316, 210},
 			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 1.0f}, 0.1f);
-		rknob.init("Release", &envelope.referenceRelease(), {437, 220},
+		rknob.init("Release", &envelope.referenceRelease(), {437, 210},
 			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
 
 		obox.init("Octave", &keyboard.referenceOctave(), {0, 8},
-			  {174, 160}, {DS::MID, DS::SMALL});
+			  {174, 150}, {DS::MID, DS::SMALL});
+
+		f_lfowave.init("Wave", &f_LFO.referenceWave(), {576, 340},
+			       DS::SMALL, {-60.0f, 180.0f},
+			       {0, WaveForm::NUM_WAVES - 1}, 1);
+		f_lfodepth.init("Depth", &f_LFO.referenceDepth(), {752, 340},
+				DS::SMALL, {-60.0f, 240.0f}, {-8.0f, 8.0f},
+				0.2f);
+		f_lforate.init("Rate", &f_LFO.referenceRate(), {928, 340},
+			       DS::SMALL, {-60.0f, 180.0f}, {0, 16}, 1);
+
+		a_lfowave.init("Wave", &a_LFO.referenceWave(), {576, 450},
+			       DS::SMALL, {-60.0f, 180.0f},
+			       {0, WaveForm::NUM_WAVES - 1}, 1);
+		a_lfodepth.init("Depth", &a_LFO.referenceDepth(), {752, 450},
+				DS::SMALL, {-60.0f, 240.0f}, {-8.0f, 8.0f},
+				0.5f);
+		a_lforate.init("Rate", &a_LFO.referenceRate(), {928, 450},
+			       DS::SMALL, {-60.0f, 180.0f}, {0, 16}, 1);
 	}
 
 	~Game()
@@ -101,6 +152,14 @@ class Game
 
 		obox.processInput(&input);
 
+		f_lfowave.processInput(&input);
+		f_lfodepth.processInput(&input);
+		f_lforate.processInput(&input);
+
+		a_lfowave.processInput(&input);
+		a_lfodepth.processInput(&input);
+		a_lforate.processInput(&input);
+
 		if (input.isKeyPressed(SDL_SCANCODE_Z) ||
 		    input.isKeyPressed(SDL_SCANCODE_ESCAPE) || input.willExit())
 			game_on = false;
@@ -118,6 +177,14 @@ class Game
 		sknob.applyNum();
 		rknob.applyNum();
 
+		f_lfowave.applyCat(WaveArray[f_lfowave.getValue()].label);
+		f_lfodepth.applyNum();
+		f_lforate.applyNum();
+
+		a_lfowave.applyCat(WaveArray[a_lfowave.getValue()].label);
+		a_lfodepth.applyNum();
+		a_lforate.applyNum();
+
 		timer.update();
 	}
 
@@ -127,7 +194,7 @@ class Game
 
 		SDL_SetRenderDrawColor(renderer.getRenderer(), 255, 255, 255,
 				       255);
-		SDL_RenderDrawLine(renderer.getRenderer(), 240, 40, 240, 280);
+		SDL_RenderDrawLine(renderer.getRenderer(), 240, 40, 240, 260);
 
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
 
@@ -140,6 +207,16 @@ class Game
 		rknob.draw(&renderer, intp);
 
 		obox.draw(&renderer, intp);
+
+		renderer.drawCachedText(fOV);
+		f_lfowave.draw(&renderer, intp);
+		f_lfodepth.draw(&renderer, intp);
+		f_lforate.draw(&renderer, intp);
+
+		renderer.drawCachedText(aOV);
+		a_lfowave.draw(&renderer, intp);
+		a_lfodepth.draw(&renderer, intp);
+		a_lforate.draw(&renderer, intp);
 
 		renderer.present();
 	}
