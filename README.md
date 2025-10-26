@@ -13,8 +13,8 @@ Select knobs by clicking them and adjust their values with your scroll wheel. To
 
 **The Latest**
 
-SUPER BASIC LFOs!!! DM for tips on better implementation.
+Rolled back LFOs to reimplement knob functionality.
 
 **Known Issues**
 
-Messy af.
+Ugly af.

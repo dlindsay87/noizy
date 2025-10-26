@@ -3,7 +3,7 @@
 Keyboard::Keyboard(int wave, int octave)
     : _wave(wave), _oldWave(wave), _octave(octave), _oldOctave(octave)
 {
-	_waveFunction = WaveArray[_wave].waveFunction;
+	_waveFunction = WaveArray[_wave].fn;
 	for (size_t i = 0; i < N_KEYS; i++) {
 		_keyStates[i] = (ToneState){
 		    .id = _scanCodes[i],
@@ -35,7 +35,7 @@ void Keyboard::_applyIntonation()
 void Keyboard::_applyWave()
 {
 	if (_wave != _oldWave) {
-		_waveFunction = WaveArray[_wave].waveFunction;
+		_waveFunction = WaveArray[_wave].fn;
 		_oldWave = _wave;
 	}
 }

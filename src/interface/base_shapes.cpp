@@ -108,6 +108,7 @@ bool Circle::isOverlapping(glm::ivec2 mousePos) const
 
 void Circle::rotate(float angle)
 {
+	angle *= M_PI / 180;
 	for (auto &p : _pointArr) {
 		int px = static_cast<int>(_scale.x * cos(angle));
 		int py = static_cast<int>(_scale.x * sin(angle));
