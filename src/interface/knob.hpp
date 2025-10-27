@@ -5,10 +5,10 @@
 #include <sstream>
 
 #include "base_categories.h"
+#include "base_control.h"
 #include "base_shapes.h"
-#include "input_manager.h"
 
-template <typename U> class IKnob
+template <typename U> class IKnob : public IControl
 {
       protected:
 	TextOverlay labelOV;
@@ -64,9 +64,7 @@ template <typename U> class IKnob
 	virtual std::string _setValueText() const = 0;
 
       public:
-	virtual ~IKnob() {}
-
-	virtual void init(const char *label, U *ref, glm::ivec2 pos, int k_rad,
+	virtual void init(const char *label, U *ref, int k_rad,
 			  glm::vec<2, U, glm::lowp> v_lim, glm::vec2 r_lim,
 			  U step)
 	{
@@ -77,17 +75,15 @@ template <typename U> class IKnob
 		_step = step;
 		_selected = false;
 
-		_knobShape.init(pos, k_rad);
+		_knobShape.init(k_rad);
 
-		labelOV.init(label, k_rad, ColorSelection[DC::NEUTRAL_W],
-			     {pos.x, pos.y - 2 * k_rad});
+		labelOV.init(label, k_rad, ColorSelection[DC::NEUTRAL_W]);
 
 		valueOV.init(_setValueText(), (k_rad / 2),
-			     ColorSelection[DC::NEUTRAL_W],
-			     {pos.x, pos.y + 3 * k_rad / 2});
+			     ColorSelection[DC::NEUTRAL_W]);
 	}
 
-	virtual void processInput(Input *ip)
+	virtual void processInput(Input *ip) override
 	{
 		_select(ip->getMousePosition(),
 			ip->isButtonPressed(SDL_BUTTON_LEFT));
@@ -96,7 +92,8 @@ template <typename U> class IKnob
 			_adjustValue(ip->getWheelDelta());
 		}
 	}
-	virtual void update()
+
+	virtual void update() override
 	{
 		*_valueRef =
 		    std::clamp(*_valueRef, _valueLimits.x, _valueLimits.y);
@@ -105,12 +102,37 @@ template <typename U> class IKnob
 		valueOV.text = _setValueText();
 	}
 
-	virtual void draw(Renderer *ren, float intp)
+	virtual void draw(Renderer *ren, float intp) override
 	{
 		ren->drawCachedText(labelOV);
 		ren->drawDynamicText(valueOV);
 
 		_knobShape.draw(ren, intp);
+	}
+
+	virtual void setPosition(glm::ivec2 p) override
+	{
+		int unit_h = labelOV.font.size; // aka radius
+
+		_knobShape.setPosition(p);
+		labelOV.setPosition({p.x, p.y - 2 * unit_h});
+		valueOV.setPosition({p.x, p.y + 3 * unit_h / 2});
+	}
+
+	virtual glm::ivec2 getSize(Renderer *ren) const
+	{
+		SDL_Texture *texture = ren->fetchCachedTexture(labelOV);
+
+		SDL_Rect tRect;
+		SDL_QueryTexture(texture, NULL, NULL, &tRect.w, &tRect.h);
+
+		int height = valueOV.pos.y - labelOV.pos.y;
+		height += (valueOV.font.size + labelOV.font.size) / 2;
+
+		int k_width = _knobShape.getDiameter();
+		int width = k_width >= tRect.w ? k_width : tRect.w;
+
+		return {width, height};
 	}
 };
 
@@ -145,16 +167,22 @@ template <typename U, typename... Args> class CatKnob : public IKnob<int>
 	{
 		return _arr[*_valueRef].label;
 	}
-	// init(const char *label, U *ref, glm::ivec2 pos, DS k_rad,
-	//	  glm::vec<2, U, glm::lowp> v_lim, glm::vec2 r_lim,
-	//	  U step)
+
       public:
 	void specialInit(const char *label, int *ref,
-			 const Category<U, Args...> *arr, glm::ivec2 pos,
-			 int k_rad, int v_lim, glm::vec2 r_lim)
+			 const Category<U, Args...> *arr, int k_rad, int v_lim,
+			 glm::vec2 r_lim)
 	{
 		_arr = arr;
-		init(label, ref, pos, k_rad, {0, v_lim - 1}, r_lim, 1);
+		init(label, ref, k_rad, {0, v_lim - 1}, r_lim, 1);
+	}
+
+	void draw(Renderer *ren, float intp) override
+	{
+		ren->drawCachedText(labelOV);
+		ren->drawCachedText(valueOV);
+
+		_knobShape.draw(ren, intp);
 	}
 };
 

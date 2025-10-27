@@ -55,15 +55,16 @@ struct TextOverlay {
 	std::string text;
 	Font font;
 
-	glm::ivec2 pos;
+	glm::ivec2 pos{0, 0};
 
-	void init(std::string t, int s, HC c, glm::ivec2 p)
+	void init(std::string t, int s, HC c)
 	{
 		this->text = t;
 		this->font.size = s;
 		this->font.color = c;
-		this->pos = p;
 	}
+
+	void setPosition(glm::ivec2 p) { this->pos = p; }
 
 	bool operator==(const TextOverlay &other) const noexcept
 	{

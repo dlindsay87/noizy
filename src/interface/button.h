@@ -1,24 +1,23 @@
 #ifndef __BUTTON_H__
 #define __BUTTON_H__
 
+#include "base_control.h"
 #include "base_shapes.h"
 
-template <typename U> class TriButton
+template <typename U> class TriButton : public IControl
 {
-      private:
+      protected:
 	Triangle _shape;
 	U *_refValue;
 
       public:
-	TriButton() {}
-
-	void init(glm::ivec2 pos, glm::ivec2 scale, bool down, U *ref)
+	void init(glm::ivec2 scale, bool down, U *ref)
 	{
 		_refValue = ref;
-		_shape.init(pos, scale, down);
+		_shape.init(scale, down);
 	}
 
-	virtual void processInput(Input *ip)
+	virtual void processInput(Input *ip) override
 	{
 		glm::ivec2 mousePos = ip->getMousePosition();
 
@@ -33,7 +32,22 @@ template <typename U> class TriButton
 		}
 	}
 
-	virtual void draw(Renderer *ren, float intp) { _shape.draw(ren, intp); }
+	virtual void update() override {}
+
+	virtual void draw(Renderer *ren, float intp) override
+	{
+		_shape.draw(ren, intp);
+	}
+
+	virtual void setPosition(glm::ivec2 p) override
+	{
+		_shape.setPosition(p);
+	}
+
+	virtual glm::ivec2 getSize(Renderer *ren) const override
+	{
+		return _shape.getShape();
+	}
 };
 
 #endif

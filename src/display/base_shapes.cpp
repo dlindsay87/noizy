@@ -1,22 +1,21 @@
 #include "base_shapes.h"
 
-void Box::init(glm::ivec2 pos, glm::ivec2 scale)
+void Box::init(glm::ivec2 shape)
 {
-	_pos = pos;
-	_scale = scale;
+	_shape = shape;
 	_color = ColorSelection[DC::NEUTRAL_W];
 
-	_pointArr[0] = {scale.x / 2, scale.y / 2};
-	_pointArr[1] = {scale.x / 2, -scale.y / 2};
-	_pointArr[2] = {-scale.x / 2, -scale.y / 2};
-	_pointArr[3] = {-scale.x / 2, scale.y / 2};
+	_pointArr[0] = {shape.x / 2, shape.y / 2};
+	_pointArr[1] = {shape.x / 2, -shape.y / 2};
+	_pointArr[2] = {-shape.x / 2, -shape.y / 2};
+	_pointArr[3] = {-shape.x / 2, shape.y / 2};
 }
 
 bool Box::isOverlapping(glm::ivec2 mousePos) const
 {
-	bool within_x = std::abs(mousePos.x - _pos.x) <= _scale.x / 2;
+	bool within_x = std::abs(mousePos.x - _pos.x) <= _shape.x / 2;
 
-	bool within_y = std::abs(mousePos.y - _pos.y) <= _scale.y / 2;
+	bool within_y = std::abs(mousePos.y - _pos.y) <= _shape.y / 2;
 
 	return within_x && within_y;
 }
@@ -36,16 +35,15 @@ void Box::draw(Renderer *ren, float intp)
 	}
 }
 
-void Triangle::init(glm::ivec2 pos, glm::ivec2 scale, bool down)
+void Triangle::init(glm::ivec2 shape, bool down)
 {
-	_pos = pos;
-	_scale = scale;
+	_shape = shape;
 	_downright = down;
 
 	int dir = _downright ? 1 : -1; // 1 = down, -1 = up
-	_pointArr[0] = glm::ivec2(-scale.x / 2, 0);
-	_pointArr[1] = glm::ivec2(scale.x / 2, 0);
-	_pointArr[2] = glm::ivec2(0, dir * scale.y);
+	_pointArr[0] = glm::ivec2(-shape.x / 2, 0);
+	_pointArr[1] = glm::ivec2(shape.x / 2, 0);
+	_pointArr[2] = glm::ivec2(0, dir * shape.y);
 }
 
 bool Triangle::isOverlapping(glm::ivec2 mousePos) const
@@ -93,25 +91,24 @@ void Triangle::draw(Renderer *ren, float intp)
 	}
 }
 
-void Circle::init(glm::ivec2 pos, int radius)
+void Circle::init(int radius)
 {
-	_pos = pos;
-	_scale = glm::ivec2(radius);
+	_shape = glm::ivec2(radius);
 	rotate(0.0f);
 }
 
 bool Circle::isOverlapping(glm::ivec2 mousePos) const
 {
 	return sqrt(pow(mousePos.x - _pos.x, 2) +
-		    pow(mousePos.y - _pos.y, 2)) <= _scale.x;
+		    pow(mousePos.y - _pos.y, 2)) <= _shape.x;
 }
 
 void Circle::rotate(float angle)
 {
 	angle *= M_PI / 180;
 	for (auto &p : _pointArr) {
-		int px = static_cast<int>(_scale.x * cos(angle));
-		int py = static_cast<int>(_scale.x * sin(angle));
+		int px = static_cast<int>(_shape.x * cos(angle));
+		int py = static_cast<int>(_shape.x * sin(angle));
 		p = {-px, -py};
 		angle += 2 * M_PI / K_POINTS;
 	}

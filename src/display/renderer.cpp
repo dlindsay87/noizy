@@ -102,23 +102,23 @@ void Renderer::drawCachedText(TextOverlay &ov)
 {
 	SDL_Texture *texture = fetchCachedTexture(ov);
 
-	SDL_Rect _tRect;
-	SDL_QueryTexture(texture, NULL, NULL, &_tRect.w, &_tRect.h);
-	_tRect.x = ov.pos.x - _tRect.w / 2;
-	_tRect.y = ov.pos.y - _tRect.h / 2;
+	SDL_Rect tRect;
+	SDL_QueryTexture(texture, NULL, NULL, &tRect.w, &tRect.h);
+	tRect.x = ov.pos.x - tRect.w / 2;
+	tRect.y = ov.pos.y - tRect.h / 2;
 
-	SDL_RenderCopy(_renderer, texture, NULL, &_tRect);
+	SDL_RenderCopy(_renderer, texture, NULL, &tRect);
 }
 
 void Renderer::drawDynamicText(TextOverlay &ov)
 {
 	SDL_Texture *texture = createTexture(ov);
 
-	SDL_Rect _tRect;
-	SDL_QueryTexture(texture, NULL, NULL, &_tRect.w, &_tRect.h);
-	_tRect.x = ov.pos.x - _tRect.w / 2;
-	_tRect.y = ov.pos.y - _tRect.h / 2;
+	SDL_Rect tRect;
+	SDL_QueryTexture(texture, NULL, NULL, &tRect.w, &tRect.h);
+	tRect.x = ov.pos.x - tRect.w / 2;
+	tRect.y = ov.pos.y - tRect.h / 2;
 
-	SDL_RenderCopy(_renderer, texture, NULL, &_tRect);
+	SDL_RenderCopy(_renderer, texture, NULL, &tRect);
 	SDL_DestroyTexture(texture);
 }

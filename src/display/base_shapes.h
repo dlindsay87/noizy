@@ -18,7 +18,8 @@
 class IShape
 {
       protected:
-	glm::ivec2 _pos, _scale;
+	glm::ivec2 _pos{0, 0};
+	glm::ivec2 _shape;
 	HashableColor _color;
 
       public:
@@ -26,6 +27,9 @@ class IShape
 	virtual void draw(Renderer *ren, float intp) = 0;
 
 	virtual void setColor(HashableColor c) { _color = c; }
+	virtual void setPosition(glm::ivec2 p) { _pos = p; }
+
+	virtual glm::ivec2 getShape() const { return _shape; }
 };
 
 class Box : public IShape
@@ -36,7 +40,7 @@ class Box : public IShape
       public:
 	Box() {}
 
-	virtual void init(glm::ivec2 pos, glm::ivec2 scale);
+	virtual void init(glm::ivec2 shape);
 
 	virtual bool isOverlapping(glm::ivec2 mousePos) const;
 
@@ -52,7 +56,7 @@ class Triangle : public IShape
 	glm::ivec2 _pointArr[T_POINTS];
 
       public:
-	virtual void init(glm::ivec2 pos, glm::ivec2 scale,
+	virtual void init(glm::ivec2 shape,
 			  bool down); //, int *ref);
 
 	virtual bool isOverlapping(glm::ivec2 mousePos) const;
@@ -68,13 +72,15 @@ class Circle : public IShape
 	glm::ivec2 _pointArr[K_POINTS];
 
       public:
-	virtual void init(glm::ivec2 pos, int radius);
+	virtual void init(int radius);
 
 	virtual bool isOverlapping(glm::ivec2 mousePos) const;
 
 	virtual void rotate(float angle);
 
 	virtual void draw(Renderer *ren, float intp);
+
+	int getDiameter() const { return _shape.x * 2; }
 };
 
 #endif

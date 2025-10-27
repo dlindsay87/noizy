@@ -10,6 +10,7 @@
 // #include "lfo.h"
 #include "oscilloscope.h"
 
+#include "control_panel.h"
 #include "knob.hpp"
 #include "spin_box.h"
 
@@ -30,6 +31,10 @@ class Game
 
 	CatKnob<float, float> wknob;
 	FloatKnob vknob;
+
+	SpinBox obox;
+
+	CPanel panel;
 
 	/*IKnob<float> aknob;
 	IKnob<float> dknob;
@@ -64,8 +69,6 @@ class Game
 	IKnob<float> a_lfodepth;
 	IKnob<float> a_lforate;*/
 
-	SpinBox obox;
-
 	SDL_Event e;
 	bool game_on;
 
@@ -86,14 +89,22 @@ class Game
 		osc.init({512, 150}, {480, 240}, audioManager.getBufferLen());
 
 		wknob.specialInit("Wave", &keyboard.referenceWave(), WaveArray,
-				  {66, 90}, DS::SMALL, WaveForm::NUM_WAVES,
+				  DS::SMALL, WaveForm::NUM_WAVES,
 				  {-60.0f, 180.0f});
+		// wknob.setPosition({66, 90});
 
-		vknob.init("Volume", &audioManager.referenceVolume(), {66, 210},
-			   DS::SMALL, {-40.0f, 0.0f}, {-60.0f, 180.0f}, 1.0f);
+		vknob.init("Volume", &audioManager.referenceVolume(), DS::SMALL,
+			   {-40.0f, 0.0f}, {-60.0f, 180.0f}, 1.0f);
+		// vknob.setPosition({66, 210});
 
-		obox.init("Octave", &keyboard.referenceOctave(), {0, 8},
-			  {174, 150}, {DS::MID, DS::SMALL});
+		panel.addControl(&wknob);
+		panel.addControl(&vknob);
+
+		panel.layout({1, 2}, {33, -30}, {66, 360});
+
+		obox.init("Octave", &keyboard.referenceOctave(),
+			  {DS::MID, DS::SMALL}, {0, 8});
+		obox.setPosition({174, 150});
 
 		/*aknob.init("Attack", &envelope.referenceAttack(), {316, 90},
 			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
@@ -144,8 +155,9 @@ class Game
 		keyboard.processInput(&input);
 		// envelope.processInput(&input);
 
-		wknob.processInput(&input);
-		vknob.processInput(&input);
+		// wknob.processInput(&input);
+		// vknob.processInput(&input);
+		panel.processInput(&input);
 		obox.processInput(&input);
 
 		/*aknob.processInput(&input);
@@ -172,8 +184,10 @@ class Game
 	{
 		window.update(0);
 
-		wknob.update();
-		vknob.update();
+		// wknob.update();
+		// vknob.update();
+		panel.update();
+		obox.update();
 
 		/*aknob.applyNum();
 		dknob.applyNum();
@@ -201,8 +215,9 @@ class Game
 
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
 
-		wknob.draw(&renderer, intp);
-		vknob.draw(&renderer, intp);
+		// wknob.draw(&renderer, intp);
+		// vknob.draw(&renderer, intp);
+		panel.draw(&renderer, intp);
 		obox.draw(&renderer, intp);
 
 		/*aknob.draw(&renderer, intp);
