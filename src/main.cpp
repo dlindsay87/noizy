@@ -29,19 +29,10 @@ class Game
 	Oscilloscope osc;
 	Envelope envelope;
 
-	CatKnob<float, float> wknob;
-	FloatKnob vknob;
+	CPanel kPanel;
+	CPanel ePanel;
 
-	SpinBox obox;
-
-	CPanel panel;
-
-	/*IKnob<float> aknob;
-	IKnob<float> dknob;
-	IKnob<float> sknob;
-	IKnob<float> rknob;
-
-	TextOverlay fOV = {
+	/*TextOverlay fOV = {
 	    .text = "FreqMod:",
 	    .font =
 		{
@@ -88,36 +79,14 @@ class Game
 
 		osc.init({512, 150}, {480, 240}, audioManager.getBufferLen());
 
-		wknob.specialInit("Wave", &keyboard.referenceWave(), WaveArray,
-				  DS::SMALL, WaveForm::NUM_WAVES,
-				  {-60.0f, 180.0f});
-		// wknob.setPosition({66, 90});
+		kPanel.addControls(&audioManager.getControls());
+		kPanel.addControls(&keyboard.getControls());
+		kPanel.layout({1, 2}, {33, -30}, {66, 360});
 
-		vknob.init("Volume", &audioManager.referenceVolume(), DS::SMALL,
-			   {-40.0f, 0.0f}, {-60.0f, 180.0f}, 1.0f);
-		// vknob.setPosition({66, 210});
+		ePanel.addControls(&envelope.getControls());
+		ePanel.layout({2, 2}, {188, -30}, {384, 360});
 
-		panel.addControl(&wknob);
-		panel.addControl(&vknob);
-
-		panel.layout({1, 2}, {33, -30}, {66, 360});
-
-		obox.init("Octave", &keyboard.referenceOctave(),
-			  {DS::MID, DS::SMALL}, {0, 8});
-		obox.setPosition({174, 150});
-
-		/*aknob.init("Attack", &envelope.referenceAttack(), {316, 90},
-			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
-		dknob.init("Decay", &envelope.referenceDecay(), {437, 90},
-			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
-		sknob.init("Sustain", &envelope.referenceSustain(), {316, 210},
-			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 1.0f}, 0.1f);
-		rknob.init("Release", &envelope.referenceRelease(), {437, 210},
-			   DS::SMALL, {-60.0f, 180.0f}, {0.0f, 4.0f}, 0.2f);
-
-
-
-		f_lfowave.init("Wave", &f_LFO.referenceWave(), {576, 340},
+		/*f_lfowave.init("Wave", &f_LFO.referenceWave(), {576, 340},
 			       DS::SMALL, {-60.0f, 180.0f},
 			       {0, WaveForm::NUM_WAVES - 1}, 1);
 		f_lfodepth.init("Depth", &f_LFO.referenceDepth(), {752, 340},
@@ -153,21 +122,11 @@ class Game
 
 		window.processInput(&input);
 		keyboard.processInput(&input);
-		// envelope.processInput(&input);
 
-		// wknob.processInput(&input);
-		// vknob.processInput(&input);
-		panel.processInput(&input);
-		obox.processInput(&input);
+		kPanel.processInput(&input);
+		ePanel.processInput(&input);
 
-		/*aknob.processInput(&input);
-		dknob.processInput(&input);
-		sknob.processInput(&input);
-		rknob.processInput(&input);
-
-
-
-		f_lfowave.processInput(&input);
+		/*f_lfowave.processInput(&input);
 		f_lfodepth.processInput(&input);
 		f_lforate.processInput(&input);
 
@@ -184,17 +143,12 @@ class Game
 	{
 		window.update(0);
 
-		// wknob.update();
-		// vknob.update();
-		panel.update();
-		obox.update();
+		kPanel.update();
+		ePanel.update();
 
-		/*aknob.applyNum();
-		dknob.applyNum();
-		sknob.applyNum();
-		rknob.applyNum();
+		keyboard.update();
 
-		f_lfowave.applyCat(WaveArray[f_lfowave.getValue()].label);
+		/*f_lfowave.applyCat(WaveArray[f_lfowave.getValue()].label);
 		f_lfodepth.applyNum();
 		f_lforate.applyNum();
 
@@ -215,19 +169,12 @@ class Game
 
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
 
-		// wknob.draw(&renderer, intp);
-		// vknob.draw(&renderer, intp);
-		panel.draw(&renderer, intp);
-		obox.draw(&renderer, intp);
+		keyboard.draw(&renderer, intp);
 
-		/*aknob.draw(&renderer, intp);
-		dknob.draw(&renderer, intp);
-		sknob.draw(&renderer, intp);
-		rknob.draw(&renderer, intp);
+		kPanel.draw(&renderer, intp);
+		ePanel.draw(&renderer, intp);
 
-
-
-		renderer.drawCachedText(fOV);
+		/*renderer.drawCachedText(fOV);
 		f_lfowave.draw(&renderer, intp);
 		f_lfodepth.draw(&renderer, intp);
 		f_lforate.draw(&renderer, intp);

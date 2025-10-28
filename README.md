@@ -17,4 +17,4 @@ Rolled back LFOs to reimplement knob functionality. Added rudimentary panel clas
 
 **Known Issues**
 
-Ugly af. Inconsistent naming patterns.
+Ugly af. Inconsistent naming patterns. Unintuitive panel application.

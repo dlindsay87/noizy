@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include "base_control.h"
 #include "button.h"
 
 class SpinBox : public IControl
@@ -27,6 +26,13 @@ class SpinBox : public IControl
 	}
 
       public:
+	SpinBox() = default;
+
+	SpinBox(const char *label, int *ref, glm::ivec2 size, glm::ivec2 v_lim)
+	{
+		init(label, ref, size, v_lim);
+	}
+
 	void init(const char *label, int *ref, glm::ivec2 size,
 		  glm::ivec2 v_lim)
 	{

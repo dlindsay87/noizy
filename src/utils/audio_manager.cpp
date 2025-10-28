@@ -10,6 +10,9 @@ AudioManager::AudioManager(float volume, int sampleRate, int samples)
     : _masterVolume(volume), _sampleRate(sampleRate), _samples(samples)
 {
 	_displayBuffer = new int16_t[_samples];
+	_controls.emplace_back(new FloatKnob("Volume", &_masterVolume,
+					     DS::SMALL, {-40.0f, 0.0f},
+					     {-60.0f, 180.0f}, 1.0f));
 }
 
 AudioManager::~AudioManager()

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "base_classes.h"
+#include "knob.hpp"
 
 void callbackWrapper(void *userdata, Uint8 *stream, int len);
 
@@ -23,6 +24,7 @@ class AudioManager
 	int16_t *_displayBuffer = nullptr;
 
 	std::vector<IGenerator *> _generators;
+	std::vector<IControl *> _controls;
 
 	void _calcSample(size_t i);
 
@@ -42,7 +44,7 @@ class AudioManager
 	const int16_t *getDisplayBuffer() const { return _displayBuffer; }
 	size_t getBufferLen() const { return static_cast<size_t>(_samples); }
 
-	float &referenceVolume() { return _masterVolume; }
+	std::vector<IControl *> &getControls() { return _controls; }
 };
 
 #endif

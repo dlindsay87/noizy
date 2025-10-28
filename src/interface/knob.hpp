@@ -5,7 +5,6 @@
 #include <sstream>
 
 #include "base_categories.h"
-#include "base_control.h"
 #include "base_shapes.h"
 
 template <typename U> class IKnob : public IControl
@@ -64,6 +63,8 @@ template <typename U> class IKnob : public IControl
 	virtual std::string _setValueText() const = 0;
 
       public:
+	IKnob() = default;
+
 	virtual void init(const char *label, U *ref, int k_rad,
 			  glm::vec<2, U, glm::lowp> v_lim, glm::vec2 r_lim,
 			  U step)
@@ -145,6 +146,15 @@ class FloatKnob : public IKnob<float>
 		ss << std::fixed << std::setprecision(2) << *_valueRef;
 		return ss.str();
 	}
+
+      public:
+	FloatKnob() : IKnob<float>() {}
+
+	FloatKnob(const char *label, float *ref, int k_rad, glm::vec2 v_lim,
+		  glm::vec2 r_lim, float step)
+	{
+		init(label, ref, k_rad, v_lim, r_lim, step);
+	}
 };
 
 class IntKnob : public IKnob<int>
@@ -155,6 +165,15 @@ class IntKnob : public IKnob<int>
 		std::stringstream ss;
 		ss << *_valueRef;
 		return ss.str();
+	}
+
+      public:
+	IntKnob() : IKnob<int>() {}
+
+	IntKnob(const char *label, int *ref, int k_rad, glm::vec2 v_lim,
+		glm::ivec2 r_lim, int step)
+	{
+		init(label, ref, k_rad, v_lim, r_lim, step);
 	}
 };
 
@@ -169,6 +188,14 @@ template <typename U, typename... Args> class CatKnob : public IKnob<int>
 	}
 
       public:
+	CatKnob() : IKnob<int>() {}
+
+	CatKnob(const char *label, int *ref, const Category<U, Args...> *arr,
+		int k_rad, int v_lim, glm::vec2 r_lim)
+	{
+		specialInit(label, ref, arr, k_rad, v_lim, r_lim);
+	}
+
 	void specialInit(const char *label, int *ref,
 			 const Category<U, Args...> *arr, int k_rad, int v_lim,
 			 glm::vec2 r_lim)

@@ -1,7 +1,7 @@
 #ifndef __BUTTON_H__
 #define __BUTTON_H__
 
-#include "base_control.h"
+#include "base_classes.h"
 #include "base_shapes.h"
 
 template <typename U> class TriButton : public IControl

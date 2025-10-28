@@ -1,6 +1,7 @@
 #ifndef __BASE_CLASSES_H__
 #define __BASE_CLASSES_H__
 
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <vector>
@@ -27,14 +28,28 @@ struct ToneState {
 	EnvelopeState state;
 };
 
+class IControl
+{
+      public:
+	virtual ~IControl() {}
+
+	virtual void processInput(Input *ip) = 0;
+	virtual void update() = 0;
+	virtual void draw(Renderer *ren, float intp) = 0;
+
+	virtual void setPosition(glm::ivec2 p) = 0;
+	virtual glm::ivec2 getSize(Renderer *ren) const = 0;
+};
+
 class IComponent
 {
       protected:
 	int _sampleRate;
 	float _timeStep;
+	std::vector<IControl *> _controls;
 
       public:
-	virtual ~IComponent() {}
+	virtual ~IComponent() { _controls.clear(); }
 
 	virtual void init(int sampleRate)
 	{
@@ -45,6 +60,7 @@ class IComponent
 	virtual void processInput(Input *ip) = 0;
 
 	virtual void draw(Renderer *ren, float intp) = 0;
+	std::vector<IControl *> &getControls() { return _controls; }
 };
 
 class IModifier : public IComponent

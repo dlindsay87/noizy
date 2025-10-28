@@ -22,17 +22,14 @@ void Envelope::applyState(ToneState &toneState)
 		break;
 
 	case EnvelopeState::Decay:
-		if (_sustain > 0.0f) {
-			if (_decay <= 0.0f || level <= _sustain) {
+		if (_decay <= 0.0f || level <= _sustain) {
 
-				level = _sustain;
-				state = EnvelopeState::Sustain;
+			level = _sustain;
+			state = EnvelopeState::Sustain;
 
-			} else
-				level -= (1.0 - _sustain) /
-					 (_decay * _sampleRate + 10e-6);
 		} else
-			state = EnvelopeState::Release;
+			level -=
+			    (1.0 - _sustain) / (_decay * _sampleRate + 10e-6);
 		peak = level;
 		break;
 
