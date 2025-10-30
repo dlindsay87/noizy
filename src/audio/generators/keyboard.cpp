@@ -20,8 +20,9 @@ Keyboard::Keyboard(int wave, int octave)
 					   WaveForm::NUM_WAVES,
 					   {-60.0f, 180.0f}));
 
-	obox.init("Octave", &_octave, {DS::MID, DS::SMALL}, {0, N_OCTAVES - 1});
-	obox.setPosition({174, 150});
+	_controls.emplace_back(new SpinBox(
+	    "Octave", &_octave, {DS::MID, DS::SMALL}, {0, N_OCTAVES - 1}));
+	// obox.setPosition({174, 150});
 }
 
 float Keyboard::_intonate(int i)
@@ -62,7 +63,7 @@ float Keyboard::_displayPhase(size_t idx, float amp, float freq)
 
 void Keyboard::processInput(Input *ip)
 {
-	obox.processInput(ip);
+	// obox.processInput(ip);
 
 	for (auto &ks : _keyStates) {
 		if (ip->isKeyPressed(ks.id)) {

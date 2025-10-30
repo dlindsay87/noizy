@@ -13,8 +13,8 @@ Select knobs by clicking them and adjust their values with your scroll wheel. To
 
 **The Latest**
 
-Rolled back LFOs to reimplement knob functionality. Added rudimentary panel class for "easy" layout of controls.
+Rolled back LFOs to reimplement knob functionality. Added rudimentary panel class for "easy" layout of controls. Used some chatgpt to help figure out a flexible layout for control panels. Will refactor.
 
 **Known Issues**
 
-Ugly af. Inconsistent naming patterns. Unintuitive panel application.
+Ugly af. Inconsistent naming patterns.

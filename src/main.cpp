@@ -81,10 +81,10 @@ class Game
 
 		kPanel.addControls(&audioManager.getControls());
 		kPanel.addControls(&keyboard.getControls());
-		kPanel.layout({1, 2}, {33, -30}, {66, 360});
+		kPanel.layout({2, 2}, {0, 30}, {240, 240}, false); // 174, 150
 
 		ePanel.addControls(&envelope.getControls());
-		ePanel.layout({2, 2}, {188, -30}, {384, 360});
+		ePanel.layout({2, 2}, {240, 30}, {272, 240});
 
 		/*f_lfowave.init("Wave", &f_LFO.referenceWave(), {576, 340},
 			       DS::SMALL, {-60.0f, 180.0f},
@@ -165,6 +165,7 @@ class Game
 
 		SDL_SetRenderDrawColor(renderer.getRenderer(), 255, 255, 255,
 				       255);
+		// just a decal
 		SDL_RenderDrawLine(renderer.getRenderer(), 240, 40, 240, 260);
 
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
