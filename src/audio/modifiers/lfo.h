@@ -2,6 +2,7 @@
 #define __LFO_H__
 
 #include "base_classes.h"
+#include "knob.hpp"
 #include "wave_functions.hpp"
 
 class LFO : public IModifier
@@ -16,7 +17,7 @@ class LFO : public IModifier
 	virtual void _applyWave()
 	{
 		if (_wave != _oldWave) {
-			_waveFunction = WaveArray[_wave].waveFunction;
+			_waveFunction = WaveArray[_wave].fn;
 			_oldWave = _wave;
 		}
 	}
@@ -26,23 +27,27 @@ class LFO : public IModifier
 	    : _depth(0.0f), _rate(0.0f), _phase(0.0f), _wave(wave),
 	      _oldWave(wave)
 	{
-		_waveFunction = WaveArray[_wave].waveFunction;
+		_waveFunction = WaveArray[_wave].fn;
+
+		_controls.emplace_back(
+		    new CatKnob("Wave", &_wave, WaveArray, DS::SMALL,
+				WaveForm::NUM_WAVES, {-60.0f, 180.0f}));
+		_controls.emplace_back(new FloatKnob("Depth", &_depth,
+						     DS::SMALL, {-8.0f, 8.0f},
+						     {-60.0f, 240.0f}, 0.2f));
+		_controls.emplace_back(new FloatKnob(
+		    "Rate", &_rate, DS::SMALL, {0, 16}, {-60.0f, 180.0f}, 1));
 	}
 
 	virtual void processInput(Input *ip) {}
 	virtual void applyState(ToneState &toneState) {}
 
 	virtual void draw(Renderer *ren, float intp) {}
-
-	virtual int &referenceWave() { return _wave; }
-	virtual float &referenceDepth() { return _depth; }
-	virtual float &referenceRate() { return _rate; }
 };
 
-class fLFO : public LFO
+class FreqLFO : public LFO
 {
       private:
-      public:
 	void applySample(Sample &s)
 	{
 		_applyWave();
@@ -55,7 +60,7 @@ class fLFO : public LFO
 	}
 };
 
-class aLFO : public LFO
+class AmpLFO : public LFO
 {
       private:
       public:

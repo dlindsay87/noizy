@@ -7,7 +7,7 @@
 #include "audio_manager.h"
 #include "envelope.h"
 #include "keyboard.h"
-// #include "lfo.h"
+#include "lfo.h"
 #include "oscilloscope.h"
 
 #include "control_panel.h"
@@ -24,41 +24,36 @@ class Game
 
 	AudioManager audioManager;
 	Keyboard keyboard;
-	// fLFO f_LFO;
-	// aLFO a_LFO;
+	FreqLFO fLFO;
+	AmpLFO aLFO;
 	Oscilloscope osc;
 	Envelope envelope;
 
 	CPanel kPanel;
 	CPanel ePanel;
+	CPanel lfoPanel;
 
-	/*TextOverlay fOV = {
-	    .text = "FreqMod:",
+	TextOverlay fOV = {
+	    .text = "Freq Mod:",
 	    .font =
 		{
 		    .size = DS::SMALL,
 		    .color = ColorSelection[DC::NEUTRAL_W],
 		},
-	    .pos = {480, 340},
+	    .pos = {480, 338},
 
 	};
-	IKnob<int> f_lfowave;
-	IKnob<float> f_lfodepth;
-	IKnob<float> f_lforate;
 
 	TextOverlay aOV = {
-	    .text = "Amp Mod:",
+	    .text = "Ampt Mod:",
 	    .font =
 		{
 		    .size = DS::SMALL,
 		    .color = ColorSelection[DC::NEUTRAL_W],
 		},
-	    .pos = {480, 450},
+	    .pos = {480, 444},
 
 	};
-	IKnob<int> a_lfowave;
-	IKnob<float> a_lfodepth;
-	IKnob<float> a_lforate;*/
 
 	SDL_Event e;
 	bool game_on;
@@ -74,35 +69,21 @@ class Game
 		audioManager.init();
 		audioManager.addGenerator(&keyboard);
 		keyboard.addModifier(&envelope);
-		// keyboard.addModifier(&f_LFO);
-		// keyboard.addModifier(&a_LFO);
+		keyboard.addModifier(&fLFO);
+		keyboard.addModifier(&aLFO);
 
 		osc.init({512, 150}, {480, 240}, audioManager.getBufferLen());
 
 		kPanel.addControls(&audioManager.getControls());
 		kPanel.addControls(&keyboard.getControls());
-		kPanel.layout({2, 2}, {0, 30}, {240, 240}, false); // 174, 150
+		kPanel.layout({2, 2}, {0, 30}, {240, 240}, false);
 
 		ePanel.addControls(&envelope.getControls());
 		ePanel.layout({2, 2}, {240, 30}, {272, 240});
 
-		/*f_lfowave.init("Wave", &f_LFO.referenceWave(), {576, 340},
-			       DS::SMALL, {-60.0f, 180.0f},
-			       {0, WaveForm::NUM_WAVES - 1}, 1);
-		f_lfodepth.init("Depth", &f_LFO.referenceDepth(), {752, 340},
-				DS::SMALL, {-60.0f, 240.0f}, {-8.0f, 8.0f},
-				0.2f);
-		f_lforate.init("Rate", &f_LFO.referenceRate(), {928, 340},
-			       DS::SMALL, {-60.0f, 180.0f}, {0, 16}, 1);
-
-		a_lfowave.init("Wave", &a_LFO.referenceWave(), {576, 450},
-			       DS::SMALL, {-60.0f, 180.0f},
-			       {0, WaveForm::NUM_WAVES - 1}, 1);
-		a_lfodepth.init("Depth", &a_LFO.referenceDepth(), {752, 450},
-				DS::SMALL, {-60.0f, 240.0f}, {-8.0f, 8.0f},
-				0.5f);
-		a_lforate.init("Rate", &a_LFO.referenceRate(), {928, 450},
-			       DS::SMALL, {-60.0f, 180.0f}, {0, 16}, 1);*/
+		lfoPanel.addControls(&fLFO.getControls());
+		lfoPanel.addControls(&aLFO.getControls());
+		lfoPanel.layout({3, 2}, {512, 285}, {480, 212});
 	}
 
 	~Game()
@@ -125,14 +106,7 @@ class Game
 
 		kPanel.processInput(&input);
 		ePanel.processInput(&input);
-
-		/*f_lfowave.processInput(&input);
-		f_lfodepth.processInput(&input);
-		f_lforate.processInput(&input);
-
-		a_lfowave.processInput(&input);
-		a_lfodepth.processInput(&input);
-		a_lforate.processInput(&input);*/
+		lfoPanel.processInput(&input);
 
 		if (input.isKeyPressed(SDL_SCANCODE_Z) ||
 		    input.isKeyPressed(SDL_SCANCODE_ESCAPE) || input.willExit())
@@ -145,16 +119,9 @@ class Game
 
 		kPanel.update();
 		ePanel.update();
+		lfoPanel.update();
 
 		keyboard.update();
-
-		/*f_lfowave.applyCat(WaveArray[f_lfowave.getValue()].label);
-		f_lfodepth.applyNum();
-		f_lforate.applyNum();
-
-		a_lfowave.applyCat(WaveArray[a_lfowave.getValue()].label);
-		a_lfodepth.applyNum();
-		a_lforate.applyNum();*/
 
 		timer.update();
 	}
@@ -167,6 +134,8 @@ class Game
 				       255);
 		// just a decal
 		SDL_RenderDrawLine(renderer.getRenderer(), 240, 40, 240, 260);
+		renderer.drawCachedText(fOV);
+		renderer.drawCachedText(aOV);
 
 		osc.draw(audioManager.getDisplayBuffer(), &renderer, intp);
 
@@ -174,16 +143,7 @@ class Game
 
 		kPanel.draw(&renderer, intp);
 		ePanel.draw(&renderer, intp);
-
-		/*renderer.drawCachedText(fOV);
-		f_lfowave.draw(&renderer, intp);
-		f_lfodepth.draw(&renderer, intp);
-		f_lforate.draw(&renderer, intp);
-
-		renderer.drawCachedText(aOV);
-		a_lfowave.draw(&renderer, intp);
-		a_lfodepth.draw(&renderer, intp);
-		a_lforate.draw(&renderer, intp);*/
+		lfoPanel.draw(&renderer, intp);
 
 		renderer.present();
 	}
