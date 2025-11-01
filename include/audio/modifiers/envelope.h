@@ -26,12 +26,7 @@ class Envelope : public IModifier
 						     {-60.0f, 180.0f}, 0.2f));
 	}
 
-	void processInput(Input *ip) {}
-
-	void draw(Renderer *ren, float intp) {}
-
-	void applyState(ToneState &toneState);
-	void applySample(Sample &s) {};
+	void applyState(ToneState &toneState) override;
 };
 
 #endif

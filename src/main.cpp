@@ -11,8 +11,6 @@
 #include "oscilloscope.h"
 
 #include "control_panel.h"
-#include "knob.hpp"
-#include "spin_box.h"
 
 class Game
 {
@@ -66,8 +64,9 @@ class Game
 		window.init("Test", 1024, 512);
 		renderer.init(window.getWindow());
 
-		audioManager.init();
+		audioManager.initDevice();
 		audioManager.addGenerator(&keyboard);
+
 		keyboard.addModifier(&envelope);
 		keyboard.addModifier(&fLFO);
 		keyboard.addModifier(&aLFO);
@@ -122,6 +121,8 @@ class Game
 		lfoPanel.update();
 
 		keyboard.update();
+		fLFO.update();
+		aLFO.update();
 
 		timer.update();
 	}
@@ -132,7 +133,7 @@ class Game
 
 		SDL_SetRenderDrawColor(renderer.getRenderer(), 255, 255, 255,
 				       255);
-		// just a decal
+		// just some decals
 		SDL_RenderDrawLine(renderer.getRenderer(), 240, 40, 240, 260);
 		renderer.drawCachedText(fOV);
 		renderer.drawCachedText(aOV);

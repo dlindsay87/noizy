@@ -57,17 +57,18 @@ class IComponent
 		_timeStep = 2.0f * M_PI / _sampleRate;
 	}
 
-	virtual void processInput(Input *ip) = 0;
+	virtual void processInput(Input *ip) {}
+	virtual void update() {}
+	virtual void draw(Renderer *ren, float intp) {}
 
-	virtual void draw(Renderer *ren, float intp) = 0;
 	std::vector<IControl *> &getControls() { return _controls; }
 };
 
 class IModifier : public IComponent
 {
       public:
-	virtual void applyState(ToneState &ts) = 0;
-	virtual void applySample(Sample &s) = 0;
+	virtual void applyState(ToneState &ts) {}
+	virtual void applySample(Sample &s) {}
 };
 
 class IGenerator : public IComponent
@@ -76,16 +77,9 @@ class IGenerator : public IComponent
 	std::vector<IModifier *> _modifiers;
 
       public:
-	virtual ~IGenerator()
-	{
-		/*for (auto *m : _modifiers) {
-			delete m;
-			m = nullptr;
-		}*/
-		_modifiers.clear();
-	}
+	virtual ~IGenerator() { _modifiers.clear(); }
 
-	virtual void generate(Sample &s) = 0;
+	virtual void generate(Sample &s) {}
 
 	virtual void addModifier(IModifier *modifier)
 	{

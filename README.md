@@ -13,8 +13,8 @@ Select knobs by clicking them and adjust their values with your scroll wheel. To
 
 **The Latest**
 
-Flexible layout for controls, reintroduced LFOs.
+Restructured file hierarchy.
 
 **Known Issues**
 
-Ugly inheritance patterns.
+Inconsistent design patterns.

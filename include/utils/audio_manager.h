@@ -11,20 +11,19 @@
 
 void callbackWrapper(void *userdata, Uint8 *stream, int len);
 
-class AudioManager
+class AudioManager : public IComponent
 {
       private:
 	SDL_AudioSpec _spec;
 	SDL_AudioDeviceID _audioDevice = 0;
 
 	float _masterVolume;
-	const int _sampleRate, _samples;
+	const int _samples;
 
 	int16_t *_buffer = nullptr;
 	int16_t *_displayBuffer = nullptr;
 
 	std::vector<IGenerator *> _generators;
-	std::vector<IControl *> _controls;
 
 	void _calcSample(size_t i);
 
@@ -33,7 +32,7 @@ class AudioManager
 		     int samples = 1024);
 	~AudioManager();
 
-	void init();
+	void initDevice();
 
 	void addGenerator(IGenerator *generator);
 
@@ -43,8 +42,6 @@ class AudioManager
 
 	const int16_t *getDisplayBuffer() const { return _displayBuffer; }
 	size_t getBufferLen() const { return static_cast<size_t>(_samples); }
-
-	std::vector<IControl *> &getControls() { return _controls; }
 };
 
 #endif

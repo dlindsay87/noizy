@@ -51,13 +51,11 @@ class Triangle : public IShape
 {
       protected:
 	bool _downright;
-	// int *_refVal;
 
 	glm::ivec2 _pointArr[T_POINTS];
 
       public:
-	virtual void init(glm::ivec2 shape,
-			  bool down); //, int *ref);
+	virtual void init(glm::ivec2 shape, bool down);
 
 	virtual bool isOverlapping(glm::ivec2 mousePos) const;
 

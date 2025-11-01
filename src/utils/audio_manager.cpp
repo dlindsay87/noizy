@@ -7,8 +7,9 @@ void callbackWrapper(void *userdata, Uint8 *stream, int len)
 }
 
 AudioManager::AudioManager(float volume, int sampleRate, int samples)
-    : _masterVolume(volume), _sampleRate(sampleRate), _samples(samples)
+    : _masterVolume(volume), _samples(samples)
 {
+	init(sampleRate);
 	_displayBuffer = new int16_t[_samples];
 	_controls.emplace_back(new FloatKnob("Volume", &_masterVolume,
 					     DS::SMALL, {-40.0f, 0.0f},
@@ -51,7 +52,7 @@ void AudioManager::_calcSample(size_t i)
 	    std::clamp(s.value * db, -1.0f, 1.0f) * INT16_MAX);
 }
 
-void AudioManager::init()
+void AudioManager::initDevice()
 {
 	// Set up the SDL audio spec
 	_spec.freq = _sampleRate;

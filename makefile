@@ -1,5 +1,6 @@
 # Directories
 SRC_DIR := src
+INC_DIR := include
 BUILD_DIR := build
 
 # Source files and output
@@ -8,7 +9,7 @@ OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 DEPS := $(OBJS:.o=.d)
 
 # Include flags for each subdir in include/
-INC_PATHS := $(shell find $(SRC_DIR) -type d) lib
+INC_PATHS := $(shell find $(INC_DIR) -type d)
 INC_FLAGS := $(addprefix -I, $(INC_PATHS))
 # $(shell sdl2-config --cflags)
 

@@ -10,8 +10,6 @@ inline std::random_device rd;
 inline std::mt19937 mt_engine(rd());
 inline std::uniform_real_distribution<float> d_dist(-1.0, 1.0);
 
-// float (*WaveFunctions[])(float) = {sine, square, triangle, sawtooth, noise};
-
 enum WaveForm { SINE = 0, SQUARE, TRIANGLE, SAWTOOTH, NOISE, NUM_WAVES };
 
 inline float sine(float phase) { return std::sin(phase); }

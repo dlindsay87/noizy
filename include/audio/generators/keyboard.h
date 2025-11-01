@@ -60,20 +60,15 @@ class Keyboard : public IGenerator
 	float _advancePhase(float &phase, float amp, float freq);
 	float _displayPhase(size_t idx, float amp, float freq);
 
-	// SpinBox obox;
-
       public:
 	Keyboard(int wave = 0, int octave = 4);
 
-	void processInput(Input *ip);
-	void update()
+	void processInput(Input *ip) override;
+	void update() override
 	{
-		// obox.update();
 		_applyIntonation();
 		_applyWave();
 	}
-	void draw(Renderer *ren, float intp) {} // obox.draw(ren, intp); }
-
 	void generate(Sample &s) override;
 };
 
